@@ -1,0 +1,5 @@
+Year,JobsTotal,JobsAgriculture,jobsEntertainment,JobsConstruction, JobsHealthcare, JobsManufacturing, JobsProfessional, JobsRealestate, JobsTrade, JobsTransport, population, poverty, poverty_under18, poverty_18to65, poverty_over65, education, work_experience, working_fulltime, working_fulltime_poverty 
+2014,412,1,6,35,12,21,89,29,67,19,15429,214,99,110,5,632,736,97,2,
+2016,437,1,5,40,16,22,90,36,68,16,15496,148,73,69,5,638,738,129,3,
+2013,399,1,5,37,14,25,85,27,63,19,15476,206,84,118,3,650,757,95,1,
+2015,432,1,7,37,16,19,89,33,70,20,15679,198,98,93,6,630,723,106,1,

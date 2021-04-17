@@ -1,0 +1,117 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>DataScape Community Forecasting</title>
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <script type="text/javascript" src="../js/d3/d3.v3.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script type="text/javascript" src="../js/showdown.min.js"></script>
+  <link rel="stylesheet" href="../css/community.css" />
+
+  
+
+
+<script type="text/javascript">
+window.onload=function(){
+  
+var resizable = d3.select('#resizable');
+var resizer = d3.select('#resizer');
+var iframe = d3.select('.iframe');
+
+// To investigate further:
+// window.addEventListener("touchstart", func, {passive: true} );
+// Console warning message occurs in Chrome mobile view: Using passive event handlers #35
+// https://github.com/d3/d3-drag/issues/35
+
+var dragResize = d3.behavior.drag()
+.on('drag', function() {
+  // Determine resizer position relative to resizable (parent)
+  x = d3.mouse(this.parentNode)[0];
+
+  // Avoid negative or really small widths
+  x = Math.max(50, x);
+
+  resizable.style('width', x + 'px');
+
+  iframe.style('pointer-events','none');
+})
+.on('dragend', function() {
+  iframe.style('pointer-events','auto');
+  consoleLog('done');
+})
+
+resizer.call(dragResize);
+
+}
+
+function consoleLog(text)
+{
+    console.log(text);
+}
+
+
+
+    // tell the embed parent frame the height of the content
+    /*
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect()e.height,
+        slug: "e38bLdjk"
+      }], "*")
+    }
+    */
+
+
+loadMarkupPage("README.md", "topicsDiv", "_parent");
+
+function loadMarkupPage(pagePath, divID, target) {
+    d3.text(pagePath, function(data) {
+      var converter = new showdown.Converter(),
+      html = converter.makeHtml(data);
+      document.getElementById(divID).innerHTML = html;
+
+      //setTimeout(function(){ 
+        var elems = document.getElementById(divID).getElementsByTagName('a');
+        for (var i = 0; i < elems.length; i++) {
+          // <!--target seems to be encrypted
+          if (elems[i].text.includes("Concept") || elems[i].text.includes("American") || elems[i].text.includes("Additional") 
+            || elems[i].text.includes("Google") || elems[i].text.includes("GitHub") || elems[i].text.includes("Brain")) {
+            //alert('here')
+            elems[i].setAttribute('target', "_blank");
+          } else {
+            elems[i].setAttribute('target', target);
+          }
+        }
+      //}, 1000);
+    });
+}
+
+
+function viewInTab() {
+  //alert(url)
+   //url = document.getElementById('mainframe').src;
+   window.location.href = url;
+ }
+
+
+</script>
+
+
+</head>
+
+
+<body>
+
+
+<div style="border-top: 1px solid #ccc; padding:40px; background:#fcfcfc; clear:both; overflow: auto;">
+
+  <div id="topicsDiv" class="sideBySide" style="border-left:1px solid #fff; max-width:800px"></div>
+</div>
+
+
+
+
+</body>
+</html>

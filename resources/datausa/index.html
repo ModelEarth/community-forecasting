@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset='UTF-8'>
+	<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+	<meta name="robots" content="noindex, nofollow">
+	<title>D3.js Sortable & Responsive Table</title>
+	
+	<!-- CSV reader sample by Mingsong Hu
+		http://bl.ocks.org/AMDS/4a61497182b8fcb05906
+
+		Info about reading files and COMBINING multiple sources
+		http://learnjsdata.com/read_data.html
+	-->
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!--[if !IE]><!-->
+	<style>
+	* { 
+	  margin: 0; 
+	  padding: 0; 
+     }
+     body { 
+	   font: 14px/1.4 Georgia, Serif; 
+     }
+    #page-wrap {
+	  margin: 50px;
+    }
+    p {
+	 margin: 20px 0; 
+    }
+
+	/* 
+	Generic Styling, for Desktops/Laptops 
+	*/
+	table { 
+		width: 100%; 
+		border-collapse: collapse; 
+	}
+	/* Zebra striping */
+	tr:nth-of-type(odd) { 
+		background: #eee; 
+	}
+	th { 
+		background: #333; 
+		color: white; 
+		font-weight: bold; 
+		cursor: s-resize;
+		background-repeat: no-repeat;
+        background-position: 3% center;
+	}
+	td, th { 
+		padding: 6px; 
+		border: 1px solid #ccc; 
+		text-align: left; 
+	}
+	
+	th.des:after {
+      content: "\21E9";
+    }
+    
+    th.aes:after {
+      content: "\21E7";
+    }
+	
+	/* 
+	Max width before this PARTICULAR table gets nasty
+	This query will take effect for any screen smaller than 760px
+	and also iPads specifically.
+	*/
+	@media 
+	only screen and (max-width: 760px),
+	(min-device-width: 768px) and (max-device-width: 1024px)  {
+	
+		/* Force table to not be like tables anymore */
+		table, thead, tbody, th, td, tr { 
+			display: block; 
+		}
+		
+		/* Hide table headers (but not display: none;, for accessibility) */
+		thead tr { 
+			position: absolute;
+			top: -9999px;
+			left: -9999px;
+		}
+		
+		tr { border: 1px solid #ccc; }
+		
+		td { 
+			/* Behave  like a "row" */
+			border: none;
+			border-bottom: 1px solid #eee; 
+			position: relative;
+			padding-left: 50%; 
+		}
+		
+		td:before { 
+			/* Now like a table header */
+			position: absolute;
+			/* Top/left values mimic padding */
+			top: 6px;
+			left: 6px;
+			width: 45%; 
+			padding-right: 10px; 
+			white-space: nowrap;
+		}
+		
+		/*
+		Label the data
+		*/
+		td:before {
+		  content: attr(data-th) ": ";
+          font-weight: bold;
+          width: 6.5em;
+          display: inline-block;
+		}
+	}
+	
+	/* Smartphones (portrait and landscape) ----------- */
+	@media only screen
+	and (min-device-width : 320px)
+	and (max-device-width : 480px) {
+		body { 
+			padding: 0; 
+			margin: 0; 
+			width: 320px; }
+		}
+	
+	/* iPads (portrait and landscape) ----------- */
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+		body { 
+			width: 495px; 
+		}
+	}
+	
+	</style>
+	<!--<![endif]-->
+
+</head>
+
+
+<body>
+
+	<div id="page-wrap">
+
+	<h1>DataUSA JSON API</h1>
+    	
+	<P>JSON Reader Project: Display results from this <a href="https://api.datausa.io/api/?show=geo&sumlevel=state&required=avg_wage">DataUSA JSON API</a> in table format.</P>
+
+	<p>Inspect console to see our efforts. Example of building a table in D3...</p>
+
+<pre>
+d3.text("your.csv", function(data) {
+  var parsedCSV = d3.csv.parseRows(data);
+
+  var container = d3.select("#d3div")
+      .append("table")
+
+      .selectAll("tr")
+          .data(parsedCSV).enter()
+          .append("tr")
+
+      .selectAll("td")
+          .data(function(d) { return d; }).enter()
+          .append("td")
+          .text(function(d) { return d; });
+});
+</pre>
+
+	<p>Basing work on CSV table formater by Mingsong Hu<br>
+	
+	Note: Table sorting is not working in the <a href="http://bl.ocks.org/AMDS/4a61497182b8fcb05906">original sample</a></p>
+
+	</div>
+	<script type="text/javascript" src="//d3js.org/d3.v5.min.js"></script>
+	<script type="text/javascript">
+
+	var url = "https://api.datausa.io/api/?show=geo&sumlevel=state&required=avg_wage";
+	d3.json(url).then(function(json,error) {
+
+		if (error) throw error;
+
+		var data1 = json.data.map(function(data){
+		    return json.headers.reduce(function(obj, header, i){
+		      obj[header] = data[i];
+
+
+		      console.log(obj["year"]);
+		      //console.log(obj["geo"]);
+		      //console.log(obj["avg_wage"]);
+
+
+		      // To do: Adjust this code to work with JSON structure
+			  var sortAscending = true;
+			  var table = d3.select('#page-wrap').append('table');
+			  var titles = d3.keys(data[0]);
+			  var headers = table.append('thead').append('tr')
+	                   .selectAll('th')
+	                   .data(titles).enter()
+	                   .append('th')
+	                   .text(function (d) {
+		                    return d;
+	                    })
+	                   .on('click', function (d) {
+	                	   headers.attr('class', 'header');
+	                	   
+	                	   if (sortAscending) {
+	                	     rows.sort(function(a, b) { return b[d] < a[d]; });
+	                	     sortAscending = false;
+	                	     this.className = 'aes';
+	                	   } else {
+	                		 rows.sort(function(a, b) { return b[d] > a[d]; });
+	                		 sortAscending = true;
+	                		 this.className = 'des';
+	                	   }
+	                	   
+	                   });
+			  
+			  var rows = table.append('tbody').selectAll('tr')
+			               .data(data).enter()
+			               .append('tr');
+
+			  rows.selectAll('td')
+			    .data(function (d) {
+			    	return titles.map(function (k) {
+			    		return { 'value': d[k], 'name': k};
+			    	});
+
+			    }).enter()
+			    .append('td')
+			    .attr('data-th', function (d) {
+			    	return d.name;
+			    })
+			    .text(function (d) {
+			    	//return d.value;
+			    	return d.name;
+			    });
+
+			  return obj; // Not in. Placed rendering above instead.
+		    }, {});
+		});
+
+	  	console.log("step 2");
+	  	console.log(data1);
+	  
+	});
+	
+
+	  //d3.csv("data.csv", function(error, data) { // V3
+	  d3.csv("data.csv").then(function(data, error) { // Promise structure, new to D3 v5 - works
+
+	  	  console.log("step 3");
+			  console.log(data);
+
+		  if (error) throw error;
+
+		  console.log("Working");
+		  var sortAscending = true;
+		  var table = d3.select('#page-wrap').append('table');
+		  var titles = d3.keys(data[0]);
+		  var headers = table.append('thead').append('tr')
+		                   .selectAll('th')
+		                   .data(titles).enter()
+		                   .append('th')
+		                   .text(function (d) {
+			                    return d;
+		                    })
+		                   .on('click', function (d) {
+		                	   headers.attr('class', 'header');
+		                	   
+		                	   if (sortAscending) {
+		                	     rows.sort(function(a, b) { return b[d] < a[d]; });
+		                	     sortAscending = false;
+		                	     this.className = 'aes';
+		                	   } else {
+		                		 rows.sort(function(a, b) { return b[d] > a[d]; });
+		                		 sortAscending = true;
+		                		 this.className = 'des';
+		                	   }
+		                	   
+		                   });
+		  
+		  var rows = table.append('tbody').selectAll('tr')
+		               .data(data).enter()
+		               .append('tr');
+		  rows.selectAll('td')
+		    .data(function (d) {
+		    	return titles.map(function (k) {
+		    		return { 'value': d[k], 'name': k};
+		    	});
+		    }).enter()
+		    .append('td')
+		    .attr('data-th', function (d) {
+		    	return d.name;
+		    })
+		    .text(function (d) {
+		    	return d.value;
+		    });
+		    console.log("2");
+	  });
+
+	</script>
+</body>
+
+</html>

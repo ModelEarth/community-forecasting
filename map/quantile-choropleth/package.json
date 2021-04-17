@@ -1,0 +1,9 @@
+{
+  "name": "quantile-choropleth",
+  "main": "quantile-choropleth.js",
+  "version": "227.0.0",
+  "author": {
+    "name": "Mike Bostock",
+    "url": "https://observablehq.com/@mbostock"
+  }
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script type="text/javascript" src="../js/d3/d3.v3.js"></script>
+</head>
+<body>
+<div id="container" style="height: 700px; min-width: 900px; max-width: 1300px; margin: 0 auto"></div>
+
+<script>
+    fileName = '30317_projected.csv';
+    d3.csv(fileName, function (data) {
+        console.log(data);
+        years = [];
+        chartName = '';
+        mapData = {};
+        for (let i = 0; i < data.length; i++) {
+            for (key in data[i]) {
+                if (key === 'Year') {
+                    years.push(data[i][key]);
+                } else {
+                    if (!(key in mapData)) {
+                        mapData[key] = []
+                    }
+                    mapData[key].push(
+                        [
+                            data[i]['Year'],
+                            parseInt(data[i][key])
+                        ]
+                    );
+                }
+            }
+        }
+        console.log(years);
+        series = []
+        for (key in mapData) {
+            series.push({
+                name: key,
+                data: mapData[key]
+            })
+        }
+        console.log(series);
+
+        Highcharts.chart('container', {
+            chart: {
+                zoomType: 'xy'
+            },
+
+            title: {
+                text: chartName
+            },
+
+            xAxis: {
+                type: "category",
+                categories: years
+            },
+
+            yAxis: {
+                title: {
+                    text: ''
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            plotOptions: {
+                series: {
+                    label: {
+                        connectorAllowed: false
+                    },
+                    pointStart: 2010
+                }
+            },
+            credits: false,
+
+            series: series,
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+
+        });
+    });
+</script>
+</body>
+</html>

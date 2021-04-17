@@ -1,0 +1,61 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>DataScape - ZCTA Map</title>
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+  <meta name="robots" content="noindex, nofollow">
+  
+  <script type="text/javascript" src="../../js/d3/d3.v3.js"></script>
+  <script type="text/javascript" src="../../js/showdown.min.js"></script>
+  <link rel="stylesheet" href="../../css/community.css" />
+
+  <style>
+  img {
+  	max-width: 800px;
+  }
+  body {
+  	margin-top: 30px;
+  	margin-left: 50px;
+  }
+  </style>
+  <script>
+
+  	loadMarkupPage("readme.md", "readmeDiv", "_parent");
+
+  	function loadMarkupPage(pagePath, divID, target) {
+	    d3.text(pagePath, function(data) {
+			var converter = new showdown.Converter(),
+			html = converter.makeHtml(data);
+			document.getElementById(divID).innerHTML = html;
+			var elems = document.getElementById(divID).getElementsByTagName('a');
+	        for (var i = 0; i < elems.length; i++) {
+	          // <!--target seems to be encrypted
+	          if (elems[i].text.includes("Concept") || elems[i].text.includes("American") || elems[i].text.includes("Additional") 
+	            || elems[i].text.includes("Google") || elems[i].text.includes("GitHub") || elems[i].text.includes("Brain")) {
+	            //alert('here')
+	            elems[i].setAttribute('target', "_blank");
+	          } else {
+	            elems[i].setAttribute('target', target);
+	          }
+	        }
+	    });
+	}
+  </script>
+</head>
+
+
+<body>
+
+<div id="readmeDiv"></div><br><br>
+
+Test 1: 9MB Zcta<br>
+  <script src="https://embed.github.com/view/geojson/datascape/community-forecasting/master/docs/map/zcta/zcta_sm.topo.json"></script><br><br>
+
+Test 2: 5MB Zip<br>
+  <script src="https://embed.github.com/view/geojson/datascape/community-forecasting/master/docs/map/zip/zips_us_topo.json"></script><br><br>
+
+Test 3: NY<br>
+	<script src="https://embed.github.com/view/geojson/datascape/community-forecasting/master/docs/map/zcta/states/New_York.topo.json"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+﻿sm,lg,census
+zcta,zcta,ZCTA
+population,population,Total Population
+poverty,poverty,Below poverty level
+,,Percent below poverty level
+,,Total AGE < 18 years
+poverty_under18,poverty_under18,Below poverty level AGE < 18 years
+,,Percent below poverty level AGE < 18 years
+,,Total AGE < 5 years
+,,Below poverty level AGE < 5 years
+,,Percent below poverty level AGE < 5 years
+,,Total AGE 5 to 17 years
+,,Below poverty level AGE 5 to 17 years
+,,Percent below poverty level AGE 5 to 17 years
+,,Total AGE < 18 years - Related children of householder under 18 years
+,,Below poverty level AGE < 18 years - Related children of householder under 18 years
+,,Percent below poverty level AGE < 18 years - Related children of householder under 18 years
+,,Total AGE 18 to 64 years
+poverty_18to65,poverty_18to65,Below poverty level AGE - 18 to 64 years
+,,Percent below poverty level AGE - 18 to 64 years
+,,Total AGE 18 to 34 years
+,,Below poverty level AGE 18 to 34 years
+,,Percent below poverty level AGE 18 to 34 years
+,,Total AGE 35 to 64 years
+,,Below poverty level AGE 35 to 64 years
+,,Percent below poverty level AGE 35 to 64 years
+,,Total AGE >= 60 years
+,,Below poverty level AGE >= 60 years
+,,Percent below poverty level AGE - 60 years and over
+,,Total AGE >= 65 years
+poverty_over65,poverty_over65,Below poverty level AGE >= 65 years
+,,Percent below poverty level AGE >= 65 years
+,,Total SEX - Male
+,,Below poverty level SEX - Male
+,,Percent below poverty level SEX - Male
+,female,Total SEX - Female
+,poverty_female,Below poverty level SEX - Female
+,,Percent below poverty level SEX - Female
+,,Total RACE - White alone
+,,Below poverty level RACE - White alone
+,,Percent below poverty level RACE - White alone
+,black,Total RACE - Black or African American alone
+,,Below poverty level RACE - Black or African American alone
+,,Percent below poverty level RACE - Black or African American alone
+,native,Total RACE - American Indian and Alaska Native alone
+,,Below poverty level RACE - American Indian and Alaska Native alone
+,,Percent below poverty level RACE - American Indian and Alaska Native alone
+,asian,Total RACE - Asian alone
+,,Below poverty level RACE - Asian alone
+,,Percent below poverty level RACE - Asian alone
+,,Total RACE - Some other race alone
+,,Below poverty level RACE - Some other race alone
+,,Percent below poverty level RACE - Some other race alone
+,multi_ethnic,Total RACE - Two or more races
+,,Below poverty level RACE - Two or more races
+,,Percent below poverty level RACE - Two or more races
+,hispanic,Total Hispanic or Latino origin (of any race)
+,,Below poverty level Hispanic or Latino origin (of any race)
+,,Percent below poverty level Hispanic or Latino origin (of any race)
+,white,"Total White alone, not Hispanic or Latino"
+,,"Below poverty level White alone, not Hispanic or Latino"
+,,"Percent below poverty level White alone, not Hispanic or Latino"
+education,education,Total EDUCATIONAL ATTAINMENT - Population 25 years and over
+,,Below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over
+,,Percent below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over
+,,Total EDUCATIONAL ATTAINMENT - Population 25 years and over - Less than high school graduate
+,,Below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - Less than high school graduate
+,,Percent below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - Less than high school graduate
+,,Total EDUCATIONAL ATTAINMENT - Population 25 years and over - High school graduate (includes equivalency)
+,,Below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - High school graduate (includes equivalency)
+,,Percent below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - High school graduate (includes equivalency)
+,,"Total EDUCATIONAL ATTAINMENT - Population 25 years and over - Some college, associates degree"
+,,"Below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - Some college, associates degree"
+,,"Percent below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - Some college, associates degree"
+,,Total EDUCATIONAL ATTAINMENT - Population 25 years and over - Bachelors degree or higher
+,,Below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - Bachelors degree or higher
+,,Percent below poverty level EDUCATIONAL ATTAINMENT - Population 25 years and over - Bachelors degree or higher
+,,Total EMPLOYMENT STATUS - Civilian labor force 16 years and over
+,,Below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over
+,,Percent below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over
+,,Total EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed
+,,Below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed
+,,Percent below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed
+,,Total EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed - Male
+,,Below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed - Male
+,,Percent below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed - Male
+,,Total EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed - Female
+,,Below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed - Female
+,,Percent below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Employed - Female
+,,Total EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed
+,,Below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed
+,,Percent below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed
+,,Total EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed - Male
+,,Below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed - Male
+,,Percent below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed - Male
+,,Total EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed - Female
+,,Below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed - Female
+,,Percent below poverty level EMPLOYMENT STATUS - Civilian labor force 16 years and over - Unemployed - Female
+work_experience,work_experience,Total WORK EXPERIENCE - Population 16 years and over
+,,Below poverty level WORK EXPERIENCE - Population 16 years and over
+,,Percent below poverty level WORK EXPERIENCE - Population 16 years and over
+,,"Total WORK EXPERIENCE - Population 16 years and over - Worked full-time, year-round in the past 12 months"
+,,"Below poverty level WORK EXPERIENCE - Population 16 years and over - Worked full-time, year-round in the past 12 months"
+,,"Percent below poverty level WORK EXPERIENCE - Population 16 years and over - Worked full-time, year-round in the past 12 months"
+,,Total WORK EXPERIENCE - Population 16 years and over - Worked part-time or part-year in the past 12 months
+,,Below poverty level WORK EXPERIENCE - Population 16 years and over - Worked part-time or part-year in the past 12 months
+,,Percent below poverty level WORK EXPERIENCE - Population 16 years and over - Worked part-time or part-year in the past 12 months
+,,Total WORK EXPERIENCE - Population 16 years and over - Did not work
+,,Below poverty level WORK EXPERIENCE - Population 16 years and over - Did not work
+,,Percent below poverty level WORK EXPERIENCE - Population 16 years and over - Did not work
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 50 percent of poverty level
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 125 percent of poverty level
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 150 percent of poverty level
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 185 percent of poverty level
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 200 percent of poverty level
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 300 percent of poverty level
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 400 percent of poverty level
+,,Total ALL INDIVIDUALS WITH INCOME BELOW THE FOLLOWING POVERTY RATIOS - 500 percent of poverty level
+,,Total UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED
+,,Below poverty level UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED
+,,Percent below poverty level UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED
+,,Total UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED - Male
+,,Below poverty level UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED - Male
+,,Percent below poverty level UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED - Male
+,,Total UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED - Female
+,,Below poverty level UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED - Female
+,,Percent below poverty level UNRELATED INDIVIDUALS FOR WHOM POVERTY STATUS IS DETERMINED - Female
+,,Total 15 years
+,,Total 16 to 17 years
+,,Below poverty level 16 to 17 years
+,,Percent below poverty level 16 to 17 years
+,,Total 18 to 24 years
+,,Below poverty level 18 to 24 years
+,,Percent below poverty level 18 to 24 years
+,,Total 25 to 34 years
+,,Below poverty level 25 to 34 years
+,,Percent below poverty level 25 to 34 years
+,,Total 35 to 44 years
+,,Below poverty level 35 to 44 years
+,,Percent below poverty level 35 to 44 years
+,,Total 45 to 54 years
+,,Below poverty level 45 to 54 years
+,,Percent below poverty level 45 to 54 years
+,,Total 55 to 64 years
+,,Below poverty level 55 to 64 years
+,,Percent below poverty level 55 to 64 years
+,,Total 65 to 74 years
+,,Below poverty level 65 to 74 years
+,,Percent below poverty level 65 to 74 years
+,,Total 75 years and over
+,,Below poverty level 75 years and over
+,,Percent below poverty level 75 years and over
+working_fulltime,working_fulltime,"Total Worked full-time, year-round in the past 12 months"
+working_fulltime_poverty,working_fulltime_poverty,"Below poverty level Worked full-time, year-round in the past 12 months"
+,,"Percent below poverty level Worked full-time, year-round in the past 12 months"
+,,"Total Worked less than full-time, year-round in the past 12 months"
+,,"Below poverty level Worked less than full-time, year-round in the past 12 months"
+,,"Percent below poverty level Worked less than full-time, year-round in the past 12 months"
+,,Total Did not work
+,,Below poverty level Did not work
+,,Percent below poverty level Did not work

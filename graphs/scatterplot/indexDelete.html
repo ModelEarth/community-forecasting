@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<head>
+<title>Scatterplot</title>
+<meta charset="utf-8">
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+<meta name="robots" content="noindex, nofollow">
+<script src="//d3js.org/d3.v5.min.js"></script>
+
+<style>
+
+</style>
+</head>
+<body>
+
+
+<script>
+
+var dataset;
+//load data
+d3.csv('weather.csv', function(d) {
+  //data.forEach(function(d) {
+  //dataset.push(d.precipitation);
+  return {
+    //max: d.Maximum,
+    //min: d.Minimum,
+    //month: d.Month,
+    precipitation: d.Precipitation
+    //speed: d.Speed,
+    //state: d.State,
+    //year: d.Year
+  };
+}, function(d) {
+  dataset.push(d.precipitation); 
+});
+
+
+scatterplot = vegalite({
+  $schema: "https://vega.github.io/schema/vega-lite/v2.json",
+  title: "Vote outcomes vs. population density (by county)",
+  layer: [
+    {
+      data: { values: counties.map(county => county.properties) },
+      mark: "point",
+      encoding: {
+        x: {
+          field: "density",
+          type: "quantitative",
+          scale: { type: "log" },
+          axis: { title: "Population density (persons / km²)" },
+        },
+        size: { field: "population", type: "quantitative", scale: { type: "sqrt" } },
+        y: {
+          field: "votes.two_party_ratio",
+          type: "quantitative",
+          axis: { title: "Two party vote ratio" },
+
+        },
+        tooltip: [
+          { field: "name" },
+          { field: "population", type: "quantitative", format: ".3s" },
+          { field: "density", type: "quantitative", format: ".2f" },
+          { field: "votes.percent.dem", type: "quantitative", format: ".2%" },
+          { field: "votes.percent.gop", type: "quantitative", format: ".2%" },
+        ]
+      }
+    },
+    {
+      data: { values: predictions },
+      mark: { type: "line" },
+      encoding: {
+        x: {
+          field: "[0]",
+          type: "quantitative",
+        },
+        y: {
+          field: "[1]",
+          type: "quantitative",
+        },
+        color: { value: "#e00" },
+      }
+    }
+  ],
+  width: width,
+  height: width * 5/8,
+  autosize: { type: "fit" }
+})
+
+
+
+
+
+
+var svg = d3.select("body")
+    .append("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 960 500")
+
+    .call(d3.zoom().on("zoom", function () {
+      svg.attr("transform", d3.event.transform)
+    }))
+    .append("g");
+
+    svg.append("circle")
+      .attr("cx", document.body.clientWidth / 2)
+      .attr("cy", document.body.clientHeight / 2)
+      .attr("r", 120)
+      .style("fill", "#B8DEE6");
+
+  svg.call(tip);
+
+// Append Div for place tooltip (differs from shape tooltip)
+var div = d3.select("body")
+        .append("div")   
+        .attr("class", "tooltip")               
+        .style("opacity", 0);
+
+
+
+
+  function loadPlaces() {
+    // Load Places - Ideally this would occur first. Occurs here so place dots reside above map.
+        // Source: http://bl.ocks.org/michellechandra/raw/0b2ce4923dc9b5809922/a476b9098ba0244718b496697c5b350460d32f99/cities-lived.csv
+        //d3.csv("loctest.csv").then(function(data,error) {
+        d3.csv("places.csv").then(function(data,error) {
+
+          svg.selectAll("circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("cx", function(d) {
+            return projection([d.lon, d.lat])[0];
+          })
+          .attr("cy", function(d) {
+            return projection([d.lon, d.lat])[1];
+          })
+          .attr("r", function(d) {
+            //return Math.sqrt(d.years) * 4;
+            return Math.sqrt(d.sum_of_tickets_earned) / 2;
+          })
+            .style("fill", "rgb(217,91,67)")  
+            .style("opacity", 0.85) 
+
+          // Modification of custom tooltip code provided by Malcolm Maclean, "D3 Tips and Tricks" 
+          // http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
+          .on("mouseover", function(d) {      
+              div.transition()        
+                   .duration(200)      
+                   .style("opacity", .9);      
+                   div.text(d.place)
+                   .style("left", (d3.event.pageX) + "px")     
+                   .style("top", (d3.event.pageY - 28) + "px");    
+          })   
+
+            // fade out tooltip on mouse out               
+            .on("mouseout", function(d) {       
+                div.transition()        
+                   .duration(500)      
+                   .style("opacity", 0);   
+            });
+        });
+      // End Load Places
+  }
+  
+
+  // v7 was generated from the 2018 ZCTAs by elastic. - 9MB
+  // v2 was 2000 census - covers more of country, and smaller file, but no longer current.
+  // https://github.com/elastic/ems-file-service/tree/master/data
+  // zcta_sm.topo.json and zcta_xsm.topo.json are from cb_2017_us_zcta510_500k
+
+  //d3.json("../topo/zcta_sm.topo.json").then(function(us,error) { // Also use us.objects.zcta below
+  d3.json("../topo/zips_us_topo.json").then(function(us,error) { // No holes, but not current zcta
+  //d3.json("../topo/usa_zip_codes_v7.topo.json").then(function(us,error) {
+
+
+    svg.append("g")
+        .attr("class", "counties")
+      .selectAll("path")
+
+      /*
+      .data(topojson.feature(us, us.objects.all).features)
+      .enter().append("path")
+        .attr("fill", function(d) { 
+
+          // Set first to display others
+          //d.Poverty = unemployment.get(d.id);
+
+          //console.log("d.Poverty " + d.Poverty);
+          //console.log("d.CensusId " + d.CensusId);
+          //console.log("d.id " + d.id);
+          //console.log("d.rate " + d.rate);
+          //console.log(d);
+          d.State = state.get(d.id);
+          d.County = county.get(d.id);
+
+          return color(d.Poverty = unemployment.get(d.id));
+          
+         })
+         */
+        .attr("d", path)
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
+      .append("title")
+        //.text(function(d) { return d.Poverty + "%"; })
+        .text(function(d) { return "dev"; })
+        ;
+
+
+    svg.append("path")
+
+      //.attr("class", "zcta")
+      //.datum(topojson.feature(us, us.objects.zcta))
+      .datum(topojson.feature(us, us.objects.data))
+
+      //.attr("d", path)
+      //.attr("width", "100%")
+      //.attr("height", "100%")
+
+      .attr("class", "states")
+        .attr("d", path)
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
+      ;
+
+    
+      // Load Places could go here if we can't get map shapes to go to the back.
+      loadPlaces();
+
+  });
+
+</script>
+
+<div id="svg1"></div>
+
+</body>

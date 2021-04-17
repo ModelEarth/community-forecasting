@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<title>D3 v3 Simple</title>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+
+<style>
+path {
+  fillX: #ccc;
+  stroke: #fff;
+  stroke-width: .1px;
+}
+path:hover {
+  fill: red;
+}
+</style>
+
+<body>
+
+<script>
+var path = d3.geo.path();
+
+var svg = d3.select("body")
+  .append("svg")
+  .attr("width", "100%")
+  .attr("height", "100%")
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", "0 0 960 500")
+
+var color = d3.scale.category10();
+
+var url = "../zcta_sm.topo.json"
+d3.json(url, function(error, topology) {
+  if (error) throw error;
+  
+  //console.log("topojson", topology)
+  var geojson = topojson.feature(topology, topology.objects.zcta); // zcta was counties
+  //console.log("geojson", geojson)
+
+  svg.selectAll("path")
+      .data(geojson.features)
+    .enter().append("path")
+      .attr('fill',function(d,i) { return color(i); })
+      .attr("d", path);
+});
+
+</script>

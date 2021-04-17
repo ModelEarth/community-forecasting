@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Heatmap</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script type="text/javascript" src="../js/d3/d3.v3.js"></script>
+
+</head>
+<body>
+<div id="container" style="height: 100vh; width: 90vw;"></div>
+
+<script>
+    d3.csv('correlation.csv', function (data) {
+        const categories = [];
+        for (key in data[0]) {
+            categories.push(key);
+        }
+        const series_data = [];
+        for (let i = 0; i < categories.length; i++) {
+            for (let j = 0; j < data.length; j++) {
+                const field = categories[i];
+                series_data.push(
+                    [i, j, parseFloat(data[j][field]).toFixed(2)]
+                )
+            }
+        }
+
+        Highcharts.chart('container', {
+
+            chart: {
+                type: 'heatmap',
+                marginTop: 40,
+                marginBottom: 80,
+                plotBorderWidth: 1
+            },
+
+
+            title: {
+                text: 'Correlation'
+            },
+
+            xAxis: {
+                categories: categories
+            },
+
+            yAxis: {
+                categories: categories,
+                title: null
+            },
+
+            colorAxis: {
+                min: -1,
+                max: 1,
+                minColor: '#ff0040',
+                maxColor: '#007bff'
+            },
+            credits: false,
+
+            legend: {
+                align: 'right',
+                layout: 'vertical',
+                margin: 0,
+                verticalAlign: 'top',
+                y: 25,
+                symbolHeight: 280
+            },
+
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.yAxis.categories[this.point.y] + ' vs ' +
+                        this.series.xAxis.categories[this.point.x] + '</b> : ' + this.point.value;
+                }
+            },
+
+            series: [{
+                name: 'Correlation',
+                borderWidth: 1,
+                data: series_data,
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000'
+                }
+            }]
+
+        });
+    });
+</script>
+</body>
+</html>

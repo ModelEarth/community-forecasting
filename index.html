@@ -1,0 +1,942 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Community Forecasting</title>
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <script type="text/javascript" src="js/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="js/common.js"></script>
+  <script type="text/javascript" src="js/showdown.min.js"></script>
+  
+
+  <!--
+    Uses an iFrame called mainframe for map/leaflet/index.html
+
+    Add to cluster bars:
+    <div style='float:left;min-height:24px;background:#333'>X</div>
+  -->
+
+  <!-- prevents please.js error -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+  <!--
+  <script type="text/javascript" src="lib/d3.v5.min.js"></script>
+  -->
+  <script type="text/javascript" src="js/d3/d3.v3.js"></script>
+  <script type="text/javascript" src="js/nouislider.min.js"></script>
+  <link rel="stylesheet" href="css/community.css" />
+  <link rel="stylesheet" href="css/nouislider.min.css" />
+
+<script type="text/javascript">
+$(document).ready(function () {
+  $('.closeDiv').click(function(event) {
+      $(this).parents('div').hide();
+      $('.openDiv').show();
+      event.stopPropagation();
+  });
+  $('.openDiv').click(function(event) {
+      $('.openDiv').hide();
+      $('#resizable').show();
+      event.stopPropagation();
+  });
+  var lastRolloverTime = Date.now();
+  $('#ds_chat_top').on('click mouseover', function () {
+    $('#ds_chat_inner').show();
+    $('#closeChat').show();
+    lastRolloverTime = Date.now();
+    event.stopPropagation();
+  });
+  /*
+  $('#ds_chat').on('mouseout', function () {
+    consoleLog("ds_chat mouseout");
+    if (Date.now() - 1000 > lastRolloverTime) {
+      $('#ds_chat_inner').hide();
+      console.log("ds_chat mouseout");
+    }
+  });
+  */
+  
+  $('.closeIndicatorsDiv').click(function(event) {
+      $('.headerRectInterior').removeClass('headerRectExpand');
+      event.stopPropagation();
+  });
+  $('#mainarea, #backPage, #resizable').on('mouseover', function () {
+    $('#ds_chat_inner').hide();
+    $('#closeChat').hide();
+    $('.headerRectInterior:not(.keepOpen)').removeClass('headerRectExpand');
+    //consoleLog("#mainarea mouseover");
+  });
+  $('.arrowdown').click(function() {
+    $('.headerRectInterior').removeClass('headerRectExpand'); // Close others
+    event.stopPropagation();
+  });
+  $('.headerRectInterior').on('click mouseover', function () {
+    $('.headerRectInterior').removeClass('headerRectExpand'); // Close others
+    $(this).addClass('headerRectExpand');
+  });
+  $('#closeChat').click(function(event) {
+      $('#ds_chat_inner').hide();
+      event.stopPropagation();
+  });
+});
+$(document).ready(function () {
+  // param init resides in common.js
+  $(window).on('hashchange', function() { // Refresh param values when user changes the URL after #.
+    refreshMain();
+  });
+});
+function showBackArrow() {
+  $(document).ready(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow"); // For links in footer.
+    if (window.location.href.includes('?') || window.location.href.includes('#')) { // If page has parameters
+      $('.backPage').show();
+      $('#resizable').addClass("resizableNarrow");
+      $('.headerRect').addClass("headerRectNarrow");
+    }
+  });
+}
+function refreshMain() {
+      var columns = ''
+      param = loadParams(location.search,location.hash); // Refresh param values when user changes URL after #.
+      if (param["columns"]) {
+          columns = param["columns"];
+          //alert(columns);
+      }
+      $(document).ready(function () {
+        $("#iframeInTab").hide(); // Prevents overlap of map's expand icon.
+        //mainframe.location='map/zip/basic/#columns=' + columns;
+          showBackArrow();
+        
+      });
+      if (param["zip"]) {
+        //alert('hash change, not initial load')
+        //mainframe.location='zip/#zip=' + param["zip"]; // Doesn't work, required using ?:
+        mainframe.location='zip/?zip=' + param["zip"];
+      } else {
+        //alert('map/leaflet/#columns=' + columns)
+        mainframe.location='map/leaflet/#columns=' + columns;
+      }
+  }
+window.onload=function() {
+    
+  var resizable = d3.select('#resizable');
+  var resizer = d3.select('#resizer');
+  var iframe = d3.select('.iframe');
+  // To investigate further:
+  // window.addEventListener("touchstart", func, {passive: true} );
+  // Console warning message occurs in Chrome mobile view: Using passive event handlers #35
+  // https://github.com/d3/d3-drag/issues/35
+  var dragResize = d3.behavior.drag()
+  .on('drag', function() {
+    // Determine resizer position relative to resizable (parent)
+    x = d3.mouse(this.parentNode)[0];
+    // Avoid negative or really small widths
+    x = Math.max(50, x);
+    resizable.style('width', x + 'px');
+    iframe.style('pointer-events','none');
+  })
+  .on('dragend', function() {
+    iframe.style('pointer-events','auto');
+  })
+  resizer.call(dragResize);
+}
+    // tell the embed parent frame the height of the content
+    /*
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect()e.height,
+        slug: "e38bLdjk"
+      }], "*")
+    }
+    */
+loadMarkupPage("about/intro.md", "introDiv", "");
+loadMarkupPage("about/levels/objectives.md", "objectivesDiv", "mainframe");
+var url = "map/index.html";
+window.onclick = function(e) { 
+  //alert("e.target.target " + e.target.target + " e.target " + e.target);
+  if (e.target.target == "mainframe") {
+    url = e.target; // Might place in a cookie for backing up. Then _blank can be switched to _parent
+    document.getElementById("iframeInTab").href = url;
+  }
+};
+function viewInTab() {
+  //alert(url)
+   //url = document.getElementById('mainframe').src;
+   window.location.href = url;
+ }
+function updateHashColumns() {
+  columnsHash=''
+  for (var i = 1; i <= 6; i++) {
+    sliderValue = document.getElementById("slider-pips" + i);
+    if (sliderValue.noUiSlider.get() > 0) {
+      columnsHash = columnsHash + sliderValue.getAttribute("indicator") + ':' + Math.round(sliderValue.noUiSlider.get()) + ';';
+    }
+  }
+  columnsHash = columnsHash.replace(/;$/, ""); // Remove trailing ;
+  var pathname = window.location.pathname;
+  var queryString = "";
+  if (columnsHash) {
+    queryString = "#columns=" + columnsHash;
+  }
+  var searchTitle = columnsHash; // TODO: Use titles instead
+  window.history.pushState("", searchTitle, pathname + queryString);
+  refreshMain();
+}
+document.addEventListener("DOMContentLoaded", function(event) { 
+   
+   displaySlider('slider-pips1');
+   displaySlider('slider-pips2');
+   //displaySlider('slider-pips3');
+   displaySlider('slider-pips3');
+   displaySlider('slider-pips4');
+   displaySlider('slider-pips5');
+   displaySlider('slider-pips6');
+   
+   // var gettingToKnowSlider1 = document.getElementById("slider-pips1");
+   //  gettingToKnowSlider1.noUiSlider.on('change', function () { 
+   //    alert(gettingToKnowSlider1.noUiSlider.get())
+   //  });
+    
+      for (var i = 1; i <= 6; i++) {
+        document.getElementById("slider-pips" + i).noUiSlider.on('set', function () { // 'update' triggers on load
+          updateHashColumns();
+        });
+      }
+});
+function setSlider(divID,value) {
+  var pipsSlider = document.getElementById(divID);
+  pipsSlider.noUiSlider.set(value);
+}
+function displaySlider(divID) {
+    // Slider: https://refreshless.com/nouislider/
+    // Also dot style: https://jsfiddle.net/leongersen/9hyfv0bw/11/
+    // Also see: Preact Slider https://codepen.io/avol/pen/LyovJb
+    var pipsSlider = document.getElementById(divID);
+    noUiSlider.create(pipsSlider, {
+        range: {
+            min: 0,
+            max: 100
+        },
+        start: [0],
+        pips: {mode: 'count', values: 5}
+    });
+    var pips = pipsSlider.querySelectorAll('.noUi-value');
+    function clickOnPip() {
+        var value = Number(this.getAttribute('data-value'));
+        pipsSlider.noUiSlider.set(value);
+    }
+    for (var i = 0; i < pips.length; i++) {
+        // For this example. Do this in CSS!
+        pips[i].style.cursor = 'pointer';
+        pips[i].addEventListener('click', clickOnPip);
+    }
+    
+}
+$(document).ready(function () {
+   // param init resides in common.js
+   var columns = ''; // param["columns"] || "poverty_under18:24,poverty_over65:12";
+  $(window).on('hashchange', function() { // Refresh param values when user changes the URL after #.
+    param = loadParams(location.search,location.hash); // Refresh param values when user changes URL after #.
+    columns = param["columns"]
+  });
+  
+  // initial load
+  if (param["zip"]) {
+      $('#zip').val(param["zip"]);
+      $('.locationtext').text("Zip " + param["zip"]);
+  }
+  param = loadParams(location.search,location.hash); // Refresh param values when user changes URL after #.
+  if (param["columns"]) {
+    refreshMain();
+  }
+  // community-forecasting/?page=map/zip/print  
+  if (param["page"]) {
+    // Get everything after page=
+    pageParam = window.location.href.split("page=")[1];
+    mainframe.location = pageParam;
+    //alert("set: " + param["page"])
+    //$("#iframeInTab").setAttribute("href", param["page"]); // expandDiv
+  } else if (param["module"]) {
+    mainframe.location = "../" + param["module"];
+  } else {
+    mainframe.location = "about/welcome.html";
+  }
+  // Allows for delay loading markup
+  setTimeout(function(){ pageSettings(); }, 100); 
+  setTimeout(function(){ pageSettings(); }, 500); 
+  setTimeout(function(){ pageSettings(); }, 1000); 
+  setTimeout(function(){ pageSettings(); }, 2000); 
+  setTimeout(function(){ pageSettings(); }, 5000); 
+});
+function pageSettings() {
+      if (param["page"]) {
+      $('#ds_chat').hide();
+      $('#ds_footer').hide();
+      $('#resizable').hide();
+      $('.introtext').hide();
+      if (param["poster"]) {
+        if (param["page"] == "about") {
+            $('#resizable').show();
+            $('#ds_chat_inner').show();
+            $('#ds_chat').show();
+            //$('#ds_footer').show();
+        } else if (param["page"] == "map/zip/print") { // National - Not used
+            $('.headerIndicators').addClass('headerRectExpand'); // Show indicators
+            $('#ds_chat').show();
+            //$('#ds_footer').show();
+        } else if (param["page"] == "about/forest") {  
+            $('#ds_header').hide();
+        } else if (param["page"] == "map/leaflet") { // State map
+            $('.headerIndicators').addClass('headerRectExpand'); // Show indicators
+        } else if (param["page"] == "about/forecast") { // Regression
+            $('#resizable').show();
+            //$('#ds_footer').hide();
+            $('.closeDiv').hide();
+            $('.text-about-intro').addClass("hidetext");
+            $('.text-about-forecast').removeClass("hidetext");
+        
+            
+        } else if (param["page"] == "zip/heatmap") {
+            //$('#resizable').hide();
+            $('#ds_header').hide();
+        } else if (param["page"] == "zip") {
+            $('#ds_header').hide();
+        } else if (param["page"] == "zip/timeplot.html") {
+            $('#ds_header').hide();
+        }
+      }
+    }
+  
+}
+</script>
+
+<style>
+  h1 {
+    font-size: 22px;
+  }
+  h4 {
+    margin-bottom: 0px;
+  }
+  /* Reduce default height of pipsSlider marker */
+  .noUi-marker-horizontal.noUi-marker-large {
+    height: 10px;
+    opacity: .8;
+    margin-top: -4px;
+  }
+  .noUi-marker-normal {
+    display:none;
+  }
+  .sectionPadding {
+    padding:40px; 
+  }
+  .hidetext {
+    display:none;
+  }
+</style>
+
+<style>
+  #spanimg {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    overflow: hidden;
+  }
+  .txtbox {
+      position: relative;
+      overflow: hidden;
+      outline: none;
+      width: 100%;
+      max-width: 190px;
+      padding: 0 20px;
+      height: 48px;
+      line-height: 60px;
+      font-size: 24px;
+      color: #777;
+      border: solid 1px #b7b7b7;
+      border-radius: 5px;
+      margin-right: 7px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      float: left;
+  }
+  .gobutton {
+    margin: 0px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 18px;
+    padding: 14px 12px 15px 12px;
+    min-height: 38px;
+    color: #fff;
+    box-sizing: border-box;
+    background: #555;
+    height:48px;
+    text-decoration: none;
+  }
+  .gobutton:hover {
+    background: #aaa;
+    color: #fff;
+  }
+  #greatestNeedsHolder {
+    
+  }
+  .readingText {
+    font-size: 18px;
+  }
+  .resultsHolder {
+    padding:10px 20px 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    line-height: 26px;
+  }
+  .headerIndicators {
+    
+  }
+  .headerIndicatorsInner {
+    height:100%;
+    max-height: 80vh;
+    overflow:auto;
+  }
+  @media (max-width: 800px) {
+    #objectivesDiv {
+      margin:0px !important;
+    }
+  }
+</style>
+
+</head>
+
+
+<body>
+
+<div id="ds_header">
+  <a href='./' class='backPage' style='display:none'>
+    <div id="backPage"><div class="arrowback"></div></div>
+  </a>
+
+    
+    <div class="headerRect headerRectHeight"><div class="headerRectInterior headerIndicators"><b>Indicators</b><div class="arrowdown"></div>
+    <!-- Economic Indicators, Priorities (Themes) -->
+    <br>Education, Experience, Safety...<br>
+
+    <!--
+    <br>
+    <div style="font-size:16px">
+    <a href="#columns=poverty_under18:24,poverty_over65:12">Income Level</a><br>
+    Education Level<br>
+    Community Safety<br>
+    Employment Level<br>
+    Population Density<br>
+    </div>
+    <br>
+    -->
+
+
+      <style>
+        .noUi-pips {
+          color:#000;
+        }
+        .pipsDiv {
+          min-height: 60px;
+        }
+        .pipsTitle {
+          border-top: 1px solid #ccc;
+          padding: 10px 0 10px 30px;
+          font-size: 16px;
+          width:100%;
+        }
+        .noUi-pips-horizontal {
+          height:40px; /* prevents covering next button */
+        }
+      </style>
+
+      <!--Select factors to cluster for your incentives.<br>-->
+
+      
+        <div id="clusterStep" style="width:100%; margin-top:12px; border-top:1px solid #fff; position:relative;">
+
+          <div class="closeIndicatorsDiv" style="right:-5px;top:3px">&#9447;</div>
+
+          <div style="padding-top:20px">
+              <div class="numberCircle" style="float:left">2</div>
+              <div id="ds_chat_title" style="">
+              Indicator Weights <!--<span style="font-size: 24px">&#10158;</span>-->
+              </div>
+          </div>
+        </div>
+        <div style="clear:both">
+        Indicator importance is determined by Random Forest training.
+        <a href="./about/forest/" target="_parent">Learn More</a>
+        <br>
+        </div>
+
+    <div class="headerIndicatorsInner">
+      <div style="clear:both;max-width:200px;min-height:80px;margin-top:20px;">
+
+        <div class="pipsTitle">Population</div>
+        <div class="pipsDiv">
+          <div id="slider-pips1" indicator="Population" style="width:100%;margin-left:30px"></div>
+        </div>
+
+        <div class="pipsTitle">Education<!-- Needs--></div>
+        <div class="pipsDiv">
+          <div id="slider-pips2" indicator="Education" style="width:100%;margin-left:30px"></div>
+        </div>
+
+        <div class="pipsTitle">Work Experience<!-- Needs--></div>
+        <div class="pipsDiv">
+          <div id="slider-pips3" indicator="Work_Experience" style="width:100%;margin-left:30px"></div>
+        </div>
+
+        <!--
+        <div class="pipsTitle">Safety Needs</div>
+        <div class="pipsDiv">
+          <div id="slider-pips4" indicator="Crime" style="width:100%;margin-left:30px"></div>
+        </div>
+        -->
+
+        <div class="pipsTitle">Youth Poverty</div>
+        <div class="pipsDiv">
+          <div id="slider-pips4" indicator="Poverty_Under18" style="width:100%;margin-left:30px"></div>
+        </div>
+
+        <div class="pipsTitle">Adult Poverty</div>
+        <div class="pipsDiv">
+          <div id="slider-pips5" indicator="Poverty_18to65" style="width:100%;margin-left:30px"></div>
+        </div>
+
+        <div class="pipsTitle">Senior Poverty</div>
+        <div class="pipsDiv">
+          <div id="slider-pips6" indicator="Poverty_Over65" style="width:100%;margin-left:30px"></div>
+        </div>
+
+      </div>
+    </div>
+
+    </div></div>
+
+    <div class="headerRect headerRectHeight" style="display:none"><div class="headerRectInterior"><b>Topics</b> (themes)<div class="arrowdown"></div>
+    <br>[NAICS Indusrty Area]<!--Infrastructure, Material Flow-->
+    </div></div>
+    
+    <div class="headerRect headerRectHeight" style="display:none"><div class="headerRectInterior"><b>Categories</b> (and clusters)<div class="arrowdown"></div>
+    <br>[Specific Industries]<!--Collaborative Networks-->
+    </div></div>
+
+
+<div class="headerRect headerRectHeight"><div class="headerRectInterior"><b>Location</b> <div class="arrowdown"></div>
+    <br><span class="locationtext">Enter zipcode...</span><br><br>
+
+    <!--
+    <div style="font-size:16px">
+    <a href='?page=map/leaflet/'>Cluster Map - Georgia</a><br>
+    <a href='map/' target="mainframe">Heatmap - Inactive</a><br>
+    
+    <a href='map/leaflet/?topo=usa' target="mainframe">Cluster Map - USA (too slow, errors)</a><br>
+    <a href='map/zip/basic/' target="mainframe">Cluster Map - USA (old)</a>
+    
+    <br><br>
+    </div>
+    -->
+
+    <script>
+      $('#zip').on("keypress", function(e) {
+      if (e.keyCode == 13) { // Enter hit
+        goZip();
+      }
+    });
+    function goZip() {
+      zip = $('#zip').val();
+      $('.locationtext').text("Zip " + zip);
+      if (zip.length == 5) {
+        $('.headerRectInterior').removeClass('headerRectExpand'); // Close all menus
+        window.location='?page=zip/#zip=' + zip;
+      } else {
+        alert('Please enter a 5 digit zip.');
+      }
+    }
+    </script>
+    <div style="margin-bottom:10px;padding-top:0px">
+      <input type="text" class="txtbox frst_location" id="zip" onchange="goZip()" placeholder="Zip Code">
+      <div class="gobutton" style="float:left" onclick="goZip()">GO</div>
+      <div style="clear:both"></div>
+    </div>
+
+    </div></div>
+
+
+
+    <div class="headerRect headerRectHeight"><div class="headerRectInterior"><b>Industries</b><div class="arrowdown"></div>
+    <!-- NAICS Category Filters -->
+    <br>Employment Levels<br><br>
+
+    <div style="font-size:16px">
+    <a href="../community-forecasting/map/leaflet/#columns=JobsAgriculture:100" target="mainframe">Agriculture</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsEntertainment:100" target="mainframe">Entertainment</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsConstruction:100" target="mainframe">Construction</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsHealthcare:100" target="mainframe">Healthcare</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsManufacturing:100" target="mainframe">Manufacturing</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsProfessional:100" target="mainframe">Professional</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsRealestate:100" target="mainframe">Real Estate</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsTrade:100" target="mainframe">Trade</a><br>
+    <a href="../community-forecasting/map/leaflet/#columns=JobsTotal:100" target="mainframe">JobsTotal</a>
+    </div>
+
+    </div></div>
+
+
+    <div class="headerRect headerRectHeight outputMenu"><div class="headerRectInterior"><b>Output Results</b> <div class="arrowdown"></div>
+    <br>
+    Filter Your Campaign
+    <!--Identify cities for 5 manufacturing facilities--><!--Timeframe January to April 2019-->
+
+      <div style="clear:both;max-width:250px;min-height:60px;margin-top:20px;">
+
+        To request a private link for uploading and filtering your address data,
+        contact Loren Heyns at <span style="white-space:nowrap">678-468-1000</span>.  
+        Once activated, your filtered location data will be exportable <!--for directed campaigns -->based 
+        on your selected economic indicators and industry filters.<!--Please don't hesitate to call with input and suggestions.-->
+        
+        <!--Select clusters to export.-->
+        <!--
+        <br><br>
+        Download data matching your filters.<br>
+        <a href='https://halistechnology.com/2015/05/28/use-javascript-to-export-your-data-as-csv/' target='mainframe'>How to export Javascript to CSV</a>
+        -->
+
+      </div>
+
+    </div></div>
+</div>
+
+<div id="ds_topbar" style="clear:both">
+
+</div>
+
+
+
+<div id="resizable">
+
+  <div class="closeDiv">
+  &#9447;
+  </div>
+
+  <div id="introDivHolder" style="max-width:2000px;">
+    <div id="introDiv" style="margin:40px;"></div>
+  </div>
+
+
+  <div id="resizer"></div>
+</div>
+
+<div id="mainarea">
+  <div id="ds_command" style="display:none">
+    <textarea></textarea>
+  </div>
+
+  <div class="openDiv">
+    &ogt;
+  </div>
+
+  <a href="" id="iframeInTab"><span class="expandDiv">&neArr;</span></a>
+
+  <iframe src="" class="iframe" name="mainframe" id="mainframe" onLoad="showBackArrow()"></iframe>
+  <div style="position:absolute; bottom:0px">
+    <!--
+    Embedded content. Scroll within iFrame above.
+    -->
+
+    <!--
+     or <a href="" class="opentab">view in new tab</a>.
+      -->
+  </div>
+</div>
+
+<a name="links"></a>
+
+<br><br>
+
+<div style="background:#fcfcfc;">
+
+<div style="padding-top:0px; float:left">
+
+  <div class="sectionPadding">
+    
+    <h1>Getting Started</h1>
+
+    <div class="readingText" style="float:left; max-width:400px">
+      <div id="objectivesDiv" style="margin:40px;margin-top:0px;"></div>
+    </div>
+
+    <div style="clear:both"></div>
+
+    <div style="float:left; clear:both">
+
+        <div class="sectionPadding">
+          <div id="resourcesDiv" style="margin:40px; margin-top:10px; max-width:400px"></div>
+        </div>
+
+    </div>
+
+  </div>
+
+  <!-- not currently used -->
+  <div id="topicsDiv" class="sideBySide" style="border-left:1px solid #fff; max-width:400px"></div>
+</div>
+
+<div style="overflow:auto">
+
+<br><br>
+
+<!-- forest -->
+<h1>Predictors of Increased Poverty</h1>
+<br>
+
+<div style="font-size:14pt; padding-bottom:30px">
+    The model will set default weights using the Random Forest Classifier
+    feature importance based on an increase of 2% or more for the selected indicator.
+</div>
+
+<!-- For D3 Embedded CSV Sheet -->
+<div style="margin-left:0px;margin-right:60px; float:left">
+
+
+    <b style='font-size:19px'>Random Forest Classifier</b><br><br>
+    <!-- Training Accuracy before tuning: 97%  -->  
+
+      <div style="overflow:scroll; max-width:100%;">
+          <div class="eTable" id="d3div"></div>
+      </div>
+
+
+      <div style="font-size: 10px; margin-top:4px; display:none">
+          Values are per 1,000 individuals.
+          Disclaimer: Data is based on projections which is prone to error.
+      </div>
+      
+  </div>
+  <style>
+      table {
+          border-collapse: collapse;
+          border: 2px black solid;
+          font: 12px sans-serif;
+          min-height: 10px;
+      }
+
+      td {
+          border: 1px black solid;
+          padding: 5px;
+      }
+  </style>
+  <script type="text/javascript" charset="utf-8">
+      d3.text("data/2016/2016_random_forest_poverty.csv", function (data) {
+          var parsedCSV = d3.csv.parseRows(data);
+
+          var container = d3.select("#d3div")
+              .append("table")
+
+              .selectAll("tr")
+              .data(parsedCSV).enter()
+              .append("tr")
+
+              .selectAll("td")
+              .data(function (d) {
+                  return d;
+              }).enter()
+              .append("td")
+              .text(function (d) {
+                  return d;
+              });
+      });
+  </script>
+  <!-- End D3 Embedded CSV Sheet -->
+
+
+<div style="overflow:auto; margin-top:0px; padding-right:50px">
+
+  <div style='font-size:16px'>
+  <b><span class="yeartext"></span>2016 predicting 2017 Poverty</b><br>
+  For model training, a "y" column value of 1 indicated zip codes where poverty increased in 2017 after increasing or remaining steady from 2015 to 2016.<br><br>
+  </div>
+
+
+  <img src="about/img/random-forest.webp" style="width:100%"><br>
+
+  <div style='font-size:12pt;line-height:16pt;padding-top:20px'>
+    Best Params: 
+    max depth: 8; <!-- max number of levels in each decision tree -->
+    n-estimators: 100 <!-- number of trees in the foreset --><br>
+
+    Accuracy before tuning: 69%.&nbsp;
+    Accuracy after tuning: 71%.
+  </div>
+  
+</div>
+<!-- end forest -->
+
+<br><br><br><br>
+<br><br>&nbsp;
+
+</div>
+
+<div id="ds_chat">
+  <div id="closeChat">
+  &#9447;
+  </div>
+
+  <div id="ds_chat_top">
+    <div class="numberCircle" style="float:left">1</div>
+    <div id="ds_chat_title" style="">
+    Choose Area of Focus <!--<span style="font-size: 24px">&#10158;</span>-->
+    </div>
+  </div>
+
+  <div id="ds_chat_inner">
+    
+    <div style="margin:20px; max-width:400px">
+
+      We'll generate a map with clusters corresponding to your theme.
+      <!--
+      We'll guide you through setting priorities and choosing clusters to create 
+      an incentive program that serves communites at risk of decline.
+      --><br>
+
+
+      <h3>Where would you like<br>
+          to focus your efforts?</h3>
+
+            <!--
+            &ldquo;At Risk&rdquo; Communities
+            <b style='font-size:22px'>Identify &ldquo;At Risk&rdquo; Communities</b><br>
+            <div style='font-size:14px'>Design an incentive campaign focused on:</div></div>
+            -->
+
+            <div style="margin-bottom:16px">
+            
+            <input type="checkbox" name="focus" value="Education">
+            Education Needs<!--(worsening_education)--><br>
+            <input type="checkbox" name="focus" value="Work_Experience">
+            Work Experience Needs<!-- work experience --><br>
+            <!--
+            <input type="checkbox" name="focus" value="Safety">
+            Crime / Public Safety Needs<br>
+            -->
+            <input type="checkbox" name="focus" value="Poverty_Under18">
+            Youth Below Poverty Level<!--(worsening_poverty_under18)--><br>
+            <input type="checkbox" name="focus" value="Poverty_18to65">
+            Adults Below Poverty Level<!--(worsening_poverty_18to65)--><br>
+            <input type="checkbox" name="focus" value="Poverty_Over65">
+            Seniors Below Poverty Level<!--(worsening_poverty_over65)--><br>
+
+            </div>
+      </div>
+
+
+    <style>
+    .nextbutton {
+      margin: 0px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 18px;
+      padding: 8px 12px 20px 12px;
+      min-height: 38px;
+      color: #fff;
+      box-sizing: border-box;
+      background: #999;
+      height: 40px;
+      text-decoration: none;
+      width:100px;
+      min-width:100px;
+      text-align: center;
+      margin: 0 auto;
+      margin-bottom: 10px;
+      z-index: 100;
+    }
+    .nextbutton:hover {
+      background: #aaa;
+      color: #fff;
+    }
+    </style>
+    <div>
+      <div class="nextbutton" onclick="goNext()">NEXT</div>
+    </div>
+    <script>
+      $("input[name='focus']").click(function(event) {
+          goNext();
+          $("#ds_chat").show(); // Bring it back
+          event.stopPropagation();
+      });
+      function goNext() {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $("#ds_chat").hide();
+        var columnsHash = '';
+        $("input[name='focus']:checked").each(function () {
+
+          // Customize to include Radom Forest importance indicators
+          if ($(this).val() == "Population") {
+            setSlider('slider-pips1',100);
+            columnsHash = columnsHash + $(this).val() + ":50;";
+          } else if ($(this).val() == "Education") {
+            setSlider('slider-pips2',75);
+            setSlider('slider-pips4',30);
+            columnsHash = columnsHash + $(this).val() + ":50;Poverty_Under18:50;";
+          } else if ($(this).val() == "Work_Experience") {
+            setSlider('slider-pips3',75);
+          } else if ($(this).val() == "Poverty_Under18") {
+            setSlider('slider-pips4',75);
+            columnsHash = columnsHash + $(this).val() + ":50;";
+          } else if ($(this).val() == "Poverty_18to65") {
+            setSlider('slider-pips5',75);
+            columnsHash = columnsHash + $(this).val() + ":50;";
+          } else if ($(this).val() == "Poverty_Over65") {
+            setSlider('slider-pips6',75);
+            columnsHash = columnsHash + $(this).val() + ":50;";
+          } else {
+            columnsHash = columnsHash + $(this).val() + ":50;";
+          }
+
+        });
+        // Move this to a function in common.js
+        var pathname = window.location.pathname;
+        var queryString = "";
+        if (columnsHash) {
+          //alert("columnsHash " + columnsHash)
+          queryString = "?columns=" + columnsHash;
+        }
+        var searchTitle = columnsHash; // TODO: Use titles instead
+        window.history.pushState("", searchTitle, pathname + queryString);
+
+        // For each value in columns hash, set a value in sliders (this could be moved elsewhere)
+        param = loadParams(location.search,location.hash); // Refresh param values after change above.
+        columns = param["columns"]
+
+        // To do; Add columns loop here using setSlider() after data renaming
+        //alert(columns)
+        
+
+        refreshMain();
+        $('.headerIndicators').addClass('keepOpen');
+        $('.headerIndicators').addClass('headerRectExpand');
+        $('#resizable').hide();
+      }
+      var minHeight = window.screen.availHeight - 70;
+      $(".iframe").css("min-height",minHeight);
+    </script>
+
+  </div>
+
+</div>
+</div>
+
+<div id="ds_footer">
+  <a href="./" target="_parent">home</a>
+  <a href="../community-forecasting/map/leaflet/" target="mainframe">map</a>
+  <a href="about/info/" target="mainframe">disclaimer</a>
+  <!-- Absolute URL needed to avoid error opening in iFrame. -->
+  <!--
+  <a href="./" target="mainframe" style="float:right">datascape</a>
+  -->
+</div>
+
+</body>
+</html>

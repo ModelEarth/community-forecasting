@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Heatmap</title>
+  	<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <link rel="stylesheet" href="../js/leaflet-0.7.3/leaflet.css" />
+	
+	<!--
+	Also: Sample of load from .js file, which could be an API.
+	http://bl.ocks.org/d3noob/8973028
+	var quakePoints = [
+	[-41.5396,174.1242,1.7345],
+	[-38.8725,175.9561,2.6901],
+	[-41.8992,174.3117,4.6968],
+	[-41.7495,174.02,1.8642]
+	];
+
+
+1000 points, and intensity
+
+https://github.com/Leaflet/Leaflet.heat
+https://github.com/Leaflet/Leaflet.heat/issues/43
+
+Other samples:
+
+Heatmap with redraw
+http://bl.ocks.org/1Cr18Ni9/e995f3ebd7ac4dd4cb7ea073decaf57d
+
+Heatmap with detailed side panels - Python
+http://adilmoujahid.com/posts/2016/08/interactive-data-visualization-geospatial-d3-dc-leaflet-python/
+
+Network on map
+https://www.npmjs.com/package/leaflet-network?activeTab=readme
+	-->
+	<style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+    
+		.info {
+			padding: 6px 6px;
+			font: 25px/20px Trebuchet MS, Arial, sans-serif;
+			background: white;
+			background: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		.info h4 {
+			margin: 0 0 10px;
+			color: #3333cc;
+		}
+		
+		.image {
+			text-align: center;
+			line-height: 26px;
+			width: 100%;
+			font-size: 15px;
+			color: #555;
+		}
+		
+		.image i {
+			width: 26px;
+			height: 26px;
+			float: right;
+			opacity: 0.7;
+		}
+
+		.legend {
+			text-align: center;
+			line-height: 19px;
+			width: 25%;
+			font-size: 15px;
+			color: #555;
+		}
+		.legend i {
+			width: 26px;
+			height: 26px;
+			float: left;
+			margin-right: 1px;
+			opacity: 0.7;
+		}
+		.legend {
+			min-width: 200px;
+		}
+	</style>
+    </head>
+<body>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
+ 
+<script src="../js/leaflet-0.7.3/leaflet.js"></script>
+<script src="//leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+
+<div id="map"</div>
+<script type="text/javascript"charset="utf-8">
+ 
+//let's read the csv file. if this is finished we call the function to show it on the map.
+ 
+$(document).ready(function() {
+  $.ajax({
+    type: "GET",
+    urlX: "sample.csv",
+    urlX: "../income/2017/nonprofits/nonprofits_out.csv",
+    url: "sample/income_out.csv",
+    dataType: "text",
+    success: function(data){displayData(data)}
+  });
+});
+ 
+//now the function that is called after the file was loaded
+ 
+function displayData(Text){
+	data=$.csv.toObjects(Text);
+	var map = L.map('map',{scrollWheelZoom:false}).setView([32.0809, -81.0912], 7);
+	var CartoDB_Positron = L.tileLayer('//{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+	attribution: '<a href="//www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="//cartodb.com/attributions">Positron</a>',
+	subdomains: 'abcd',
+	maxZoom: 14
+}).addTo(map);
+
+data_array= [0,0,0]; //create it before filling 
+  for (i = 0; i < data.length; i++) {
+    //data_array[i] = [parseFloat(data[i].latitude), parseFloat(data[i].longitude), parseFloat(data[i].Magnitude)];
+	data_array[i] = [data[i].latitude,data[i].longitude,data[i].intensity];
+};
+
+		var info = L.control();
+
+		info.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info');
+			this.update();
+			return this._div;
+		};
+
+		info.update = function (props) {
+			this._div.innerHTML = '<h4>Volunteer</h4>' +
+				'<i>Hotspots</i>' ;
+		};
+
+		info.addTo(map);
+		
+		
+		var image = L.control({position: 'bottomleft'});
+		image.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info image');
+			this.update();
+			return this._div;
+		};
+		
+		image.update = function (props) {
+			//this._div.innerHTML =  '<img src="boxplot.jpg" alt="Mountain View" style="width:304px;height:228px;"> ';
+		};
+		image.addTo(map);
+		
+		var legend = L.control({position: 'bottomright'});
+		
+		legend.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info legend');
+			this.update();
+			return this._div;
+		};
+
+		legend.update = function (props) {
+			this._div.innerHTML = '<a href="../" style="text-decoration: none; color:#444" target="_parent">DataScape</a>';
+		};
+
+		legend.addTo(map);
+		
+	// radius: 15,
+    // blur: 15,
+	// maxZoom: 17,
+
+	var heat = L.heatLayer(data_array,{
+          radius: 12,
+          blur: 16,
+		  maxZoom: 17,
+      }).addTo(map);
+};
+</script>
+</body>
+</html>

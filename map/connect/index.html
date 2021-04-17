@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>[leaflet-network@0.5.2](https://bitbucket.csiro.au/projects/ONACI/repos/leaflet-network/browse) example</title>
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/@observablehq/notebook-inspector@1/dist/notebook-inspector-style.css">
+<body>
+<script type="module">
+
+import {Inspector, Runtime} from "https://unpkg.com/@observablehq/notebook-runtime@1?module";
+import notebook from "./network-connectivity-template.js";
+
+Runtime.load(notebook, Inspector.into(document.body));
+
+</script>

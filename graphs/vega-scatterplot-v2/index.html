@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vega-Lite Scatterplot</title>
+  <meta charset="utf-8">
+
+  <!--
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.3.2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@4.0.0-rc1"></script>
+  -->
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@3/build/vega.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@2/build/vega-lite.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-tooltip@0.13"></script>
+
+<!--
+<script src="https://cdn.jsdelivr.net/npm/vega@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
+-->
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
+
+
+  <style media="screen">
+    /* Add space between Vega-Embed links  */
+    .vega-actions a {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vega-Lite Scatterplot1</h1>
+ 
+  <!-- Container for the visualization -->
+  <div id="vis"></div>
+
+  <script>
+  // Assign the specification to a local variable vlSpec.
+  var vlSpec = {
+      name: "scatterplot",
+      inputs: ["vegalite","counties","predictions","width"],
+      value: (function(vegalite,counties,predictions,width){return(
+vegalite({
+  $schema: "https://vega.github.io/schema/vega-lite/v2.json",
+  title: "Vote outcomes vs. population density (by county)",
+  layer: [
+    {
+      data: { values: counties.map(county => county.properties) },
+      mark: "point",
+      encoding: {
+        x: {
+          field: "density",
+          type: "quantitative",
+          scale: { type: "log" },
+          axis: { title: "Population density (persons / km²)" },
+        },
+        size: { field: "population", type: "quantitative", scale: { type: "sqrt" } },
+        y: {
+          field: "votes.two_party_ratio",
+          type: "quantitative",
+          axis: { title: "Two party vote ratio" },
+
+        },
+        tooltip: [
+          { field: "name" },
+          { field: "population", type: "quantitative", format: ".3s" },
+          { field: "density", type: "quantitative", format: ".2f" },
+          { field: "votes.percent.dem", type: "quantitative", format: ".2%" },
+          { field: "votes.percent.gop", type: "quantitative", format: ".2%" },
+        ]
+      }
+    },
+    {
+      data: { values: predictions },
+      mark: { type: "line" },
+      encoding: {
+        x: {
+          field: "[0]",
+          type: "quantitative",
+        },
+        y: {
+          field: "[1]",
+          type: "quantitative",
+        },
+        color: { value: "#e00" },
+      }
+    }
+  ],
+  width: width,
+  height: width * 5/8,
+  autosize: { type: "fit" }
+})
+)})
+    };
+
+  // optional argument passed to Vega-Embed to specify Vega-Lite spec. More info at https://github.com/vega/vega-embed
+  var opt = {
+    "mode": "vega-lite"
+  };
+
+  // Embed the visualization in the container with id `vis`
+  vegaEmbed("#vis", vlSpec, opt).then(function(result) {
+    // Callback receiving the View instance and parsed Vega spec
+    // result.view is the View, which resides under the '#vis' element
+  }).catch(console.warn);
+  </script>
+</body>
+</html>

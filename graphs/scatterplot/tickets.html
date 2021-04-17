@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<head>
+<title>Scatterplot</title>
+<meta charset="utf-8">
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+<meta name="robots" content="noindex, nofollow">
+<script src="//d3js.org/d3.v5.min.js"></script>
+
+<style>
+  body {
+      font: 10px sans-serif;
+  }
+  svg {
+    margin-bottom: 50px;
+  }
+  .pagebreak {
+    page-break-after: always;
+  }
+  .axis path,
+  .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+  }
+  .title {
+    font: 16px sans-serif;
+  }
+  .point {
+    font: 2px sans-serif !important; /* no effect */
+    fill: transparent;
+  }
+  .goodpoint {
+      stroke: steelblue;
+  }
+  .badpoint {
+      stroke: red;
+  }
+  .legend {
+    font-size: 9pt;
+  }
+</style>
+</head>
+
+<body>
+
+<script>
+var margin = {top: 20, right: 20, bottom: 30, left: 100},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+var x = d3.scaleLinear()
+    .range([0, width]);
+
+var y = d3.scaleLinear()
+    .range([height, 0]);
+
+var svg1 = d3.select("#chart1").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g") // main grouping element g
+    // Transform into the middle of the svg
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.csv("../../map/zip/basic/places.csv")
+    .then(function(data) { // Promise structure, new to D3 v5.
+        scatterplotChart(data,svg1,"Wins+Nominations vs. HouseMedianIncome","Wins+Noms","","");
+    });
+
+function scatterplotChart(data,svg,title,feature,symbolScale,yScaleType) {
+  var legendData = [
+     ["bad HouseMedianIncome", "red", "circle"],
+     ["good HouseMedianIncome", "steelblue", "cross"]
+   ];
+   var legend = svg.append("g")
+     .attr("class", "legend")
+     .attr("height", 0)
+     .attr("width", width)
+     .attr('transform', 'translate(20,250)');
+
+   svg.selectAll('.symbol')
+     .data(legendData)
+     .enter()
+     .append('path')
+     .attr('transform', function(d, i) {
+       return 'translate(' + (width - 50) + ',' + ((i * 20) + 10) + ')'; // Symbol position
+     })
+     .attr('d', d3.symbol().type(function(d, i) {
+         if (d[2] === "circle") {
+           return d3.symbolCircle;
+         } else if (d[2] === "cross") {
+           return d3.symbolCross;
+         } else if (d[2] === "diamond") {
+           return d3.symbolDiamond;
+         } else if (d[2] === "square") {
+           return d3.symbolSquare;
+         } else {
+           return d3.symbolTriangle;
+         }
+       })
+       .size(100))
+     .style("fill", function(d) {
+       return d[1];
+     });
+
+   svg.selectAll('.label')
+     .data(legendData)
+     .enter()
+     .append('text')
+     .attr("x", width - 40)
+     .attr("y", function(d, i){ return ((i * 20)+15);})
+     .text(function(d) {
+       return d[0];
+     });
+
+
+    if (yScaleType == "log") {
+        data.forEach(function(d) {
+          //d.WinsNoms = +d.WinsNoms + 0.1; // Eliminates "trailing garbage" error
+        });
+    }
+
+    data.forEach(function(d) {
+      // Change strings to numbers
+      d.x = +d.HouseMedianIncome; // x axis
+      d.y = +d.sum_of_tickets_earned; // y axis
+
+      // OKAY, displays values
+      console.log(d.x)
+    });
+
+    
+    y = d3.scaleLinear().range([height, 0]);
+    console.log('scatterplotChart ' + y);
+
+    // Set domain range for each axis scale. 
+    // .nice ensures they start and end at nice values.
+
+    x.domain(d3.extent(data, function(d) { return d.x; })).nice(); // X Axis: HouseMedianIncome
+    y.domain(d3.extent(data, function(d) { return d.y; })).nice(); // Y Axis: [Differs]
+
+    // d3.scale.sqrt()
+
+
+    // var j = d3.time.scale().domain(d3.extent(stringDates, function(d){ return parseDate(d); })).range([0,chartWidth]);
+
+    // var qq = d3.scale.sqrt().domain([0,1000]).range([0,chartWidth]);
+
+    // Add the x-axis.
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x)); // Previous to v5: .call(d3.svg.axis().scale(x).orient("bottom"))
+
+    // Add the y-axis.
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(y));
+
+    svg.append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(feature);
+
+    svg.append('text') // X-axis Label
+    .attr('class','label')
+    .attr('y',height-13)
+    .attr('x',width)
+    .attr('dy','.71em')
+    .style('text-anchor','end')
+    .text('HouseMedianIncome');
+
+    // Chart labels - x axis
+    svg.append("text")             
+    .attr("class", "title")
+    .attr('y',0)
+    .attr('x',width/2)
+    .style("text-anchor", "middle")
+    .text(title);
+
+
+
+    // Add the points
+    // xScale(d.x) for HouseMedianIncome
+    
+
+      //.attr("r",500)
+      //.size(50)
+      // Make a function xScale(d.x)
+      // About symbols: https://github.com/d3/d3-shape/blob/master/README.md#symbol
+
+      // Was d.x
+
+        svg.selectAll(".point")
+        .data(data)
+        .enter().append("path")
+        .attr("class", function(d) {
+            alert('what')
+            console.log(d.x)
+            return "point goodpoint"; 
+          
+        })
+        // Only this line differs
+        .attr("d", d3.symbol().size(function(d) {return 30}).type( // Prior to v5: .type("triangle-up")
+          function(d) {
+            
+              return d3.symbolCircle;
+            
+          }
+        ))
+        .attr("transform", function(d) { 
+          console.log(x(d.x));
+          return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+        console.log('scatterplotChart done')
+}  
+
+</script>
+
+<div id="svg1"></div>
+<div id="chart1"></div>
+
+</body>

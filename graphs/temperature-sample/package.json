@@ -1,0 +1,9 @@
+{
+  "name": "temperature-linear-regression-example",
+  "main": "temperature-linear-regression-example.js",
+  "version": "253.0.0",
+  "author": {
+    "name": "Jon Paul Uritis",
+    "url": "https://observablehq.com/@jppope"
+  }
+}

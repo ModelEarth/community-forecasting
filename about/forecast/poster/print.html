@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+<meta name="robots" content="noindex, nofollow">
+<title>Machine Learning for Community Forecasting</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<!--
+Avoid, prevents selected rollovers from printing
+<script type="text/javascript" src="../../../js/zepto/zepto.min.js"></script>
+<script type="text/javascript" src="../../../js/common.js"></script>
+<script type="text/javascript" src="../../../js/showdown.min.js"></script>
+<link rel="stylesheet" href="../../../css/community.css" />
+-->
+
+
+
+<style>
+	body {
+		padding: 0px;
+		margin: 0px;
+		background: #fff;
+		font-family: 'Lato', sans-serif;
+		font-size: 18pt;
+		line-height: 24pt;
+	}
+	#pageSize{
+		position: relative;
+		width: 30in;
+		height: 40in;
+		/*
+		background-width: 100%; 
+		background-repeat: none;
+		background-image: url("img/header.png");
+		background-position: top;
+		*/
+	}
+	#pageHeader {
+		position:absolute;
+		left:0;
+		right:0;
+		z-index: -1;
+	}
+	#pageFooter {
+		position:absolute;
+		left:0;
+		bottom:0;
+		width:8in;
+		z-index: -1;
+	}
+	.machineFont {
+		position: absolute; 
+		top:4.9in; left:0; right:0; 
+		text-align: center; 
+		color:#fff;
+		font-size: 59pt;
+		line-height: 63pt;
+		font-weight: 600;
+		padding-left:1in;
+	}
+	.columnLeft {
+		width: 50%;
+		max-width: 50%;
+		padding-left:1.75in;
+		padding-right:.75in;
+		box-sizing: border-box;
+		float:left;
+	}
+	.columnRight {
+		width: 50%;
+		max-width: 50%;
+		padding-left:.75in;
+		padding-right:1.75in;
+		box-sizing: border-box;
+		float:left;
+	}
+	.iframeHolder {
+		width:100%;
+		height:800px;
+		max-height:800px;
+		overflow: hidden;
+		border: 1px solid #333;
+		-webkit-box-shadow: 2px 13px 16px -5px rgba(0,0,0,0.55);
+		-moz-box-shadow: 2px 13px 16px -5px rgba(0,0,0,0.55);
+		box-shadow: 2px 13px 16px -5px rgba(0,0,0,0.55);
+	}
+	.iframe {
+		width:100%;
+		height:800px;
+		max-height:800px;
+		overflow: hidden;
+		border:0px;
+	}
+	.iframeHolderMedium {
+		height:1200px;
+		max-height:1200px;
+	}
+	.iframeMedium {
+		height:1200px;
+		max-height:1200px;
+	}
+	.iframeHolderLong {
+		height:2000px;
+		max-height:2000px;
+	}
+	.iframeLong {
+		height:2000px;
+		max-height:2000px;
+	}
+</style>
+</head>
+
+<body>
+<!-- 
+Blue images:
+	https://www.google.com/search?q=cobalt+blue&safe=off&hl=en&tbs=simg:CAESqgIJb7NPu2VlWl4angILELCMpwgaYApeCAMSJiPEAcwBzQGuA8oByQEdxwHFAZ43iCedN7AosyraKNoh1ijYKOAhGjAH7o-P6UOkgZBg124tWg0WiXUanLzExztCmXmGx9la162OQKT8Hio8V5UfEeBKWnsgBAwLEI6u_1ggaCgoICAESBEzcE4IMCxCd7cEJGpgBCh4KC2NvYmFsdCBibHVl2qWI9gMLCgkvbS8wNGY2MnoKGQoHcGF0dGVybtqliPYDCgoIL20vMGh3a3kKIQoNZWxlY3RyaWMgYmx1ZdqliPYDDAoKL20vMDJ2d2J6egofCgxjb2xvcmZ1bG5lc3PapYj2AwsKCS9tLzAzMHpsZgoXCgV3YXRlctqliPYDCgoIL20vMDgzOGYM,isz:lt,islt:4mp&tbm=isch&source=lnt&sa=X&ved=0ahUKEwjW7q_51uLhAhVKAqwKHeoSCsAQpwUIIA&biw=1440&bih=821&dpr=2 -->
+
+<div id="pageSize">
+	<div id="pageHeader">
+		<div class="machineFont">
+			Machine Learning for Community Forecasting
+		</div>
+		<img src="img/header.png" style="width:100%" >
+	</div>
+
+	<div id="pageFooter">
+	</div>
+
+	<div style="height:10in">
+		&nbsp;
+	</div>
+	<div class="columnLeft">
+		<!-- INTRO -->
+		<div class="iframeHolder">
+		<iframe src="../../../?page=about" class="iframe"></iframe>
+		</div>
+		<br><br>
+
+		<!-- STEP 3 -->
+		<div class="iframeHolder">
+		<iframe src="../../../?page=map/leaflet" class="iframe"></iframe>
+		</div>
+		<br><br>
+
+		<!-- NATIONAL MAP -->
+		<!--
+		<div class="iframeHolder">
+		<iframe src="../../../?page=map/zip/print" class="iframe"></iframe>
+		</div>
+		<br><br>
+		-->
+
+		<!-- STEP 4 -->
+		<div class="iframeHolder">
+		<iframe src="../../../#page=about/forecast" class="iframe"></iframe>
+		</div>
+		<br><br>
+
+		
+<div>
+			<h1>Team 6 - datascape.github.io/community</h1>
+			Loren Heyns, Huyen Nguyen, Zhengfu Li, 
+			Truc Pham, Christopher Fleisher, Trai Tran<br>
+			Computational Science & Engineering Instructor Polo Duen Horng Chau<br>
+			Georgia Tech CSE 6242: Data and Visual Analytics (DVA) - Spring 2019<br>
+		</div>
+		
+
+		
+
+
+	</div>
+	<div class="columnRight">
+
+		
+		<!-- FOREST -->
+		<div class="iframeHolder">
+		<iframe src="../../../about/forest" class="iframe"></iframe>
+		</div>
+		<br><br>
+
+		<!-- TIMEPLOT -->
+		<div class="iframeHolder">
+		<iframe src="../../../zip/timeplot.html" class="iframe"></iframe>
+		</div>
+		<br><br>
+
+		<!-- HEATMAP CHART -->
+		<div class="iframeHolder iframeHolderMediumX">
+		<iframe src="../../../zip" class="iframe iframeMediumX"></iframe>
+		</div>
+		<br><br>
+
+<div style="margin:20px 0 0 20px;">
+
+<h1>Fun facts about our forecasting tools</h1>
+
+We use the highly efficient <b>DBSCAN clustering algorithm</b> to generate map clusters in realtime.<br>
+
+This poster is output from a giant webpage designed to create <b>custom posters for zipcodes</b>.<br> 
+
+We developed a <b>JSON Hierarchy Reader</b> that converts lists to HTML for our map cluster buckets.<br>
+
+We use the same reader with the <b>DiffBot Knowledge Graph API</b> to list industries by zip code.<br>
+
+Our GitHub pages use <b>Markdown-to-HTML</b> to build webpages from multiple files.<br>
+
+Our tables are displayed using <b>CSV-to-HTML via D3</b>. Our maps use <b>LeafletJS with D3 layers</b>.<br>
+
+		</div>
+
+		
+
+	</div>
+
+
+	
+</div>
+
+</body>
+</html>

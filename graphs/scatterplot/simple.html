@@ -1,0 +1,176 @@
+<html lang = "en">
+  <head>
+    <meta charset = "utf-8">
+    <title>Scatterplot</title>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <style>
+      circle {
+        fill: transparent;
+        stroke: green;
+        shape-rendering: crispEdges;
+      }
+      .label {
+        font-family: helvetica, ariel;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <script type = "text/javascript">
+    
+    /*
+    var data;
+    //load data
+    d3.csv('weather.csv', function(d) {
+      //data.forEach(function(d) {
+      //data.push(d.precipitation);
+      return {
+        //max: d.Maximum,
+        //min: d.Minimum,
+        //month: d.Month,
+        precipitation: d.Precipitation
+        //speed: d.Speed,
+        //state: d.State,
+        //year: d.Year
+      };
+    }, function(d) {
+      data.push(d.precipitation); 
+    });
+    
+    
+    
+    var temp;
+    var string;
+    for(var i = 0; i < numBars; i++) {
+      string = data.get(i);
+      state = states.get(i);
+      temp = {state: string};
+      data.push(temp);
+    }*/
+    
+    //var data = data.slice(0, numBars + 1);
+    //max vs min
+    /*
+    var data = [];
+    data.push([46, 32]);
+    data.push([47, 31]);
+    data.push([51, 41]);
+    data.push([52, 38]);
+    data.push([38, 29]);
+    */
+
+    
+    d3.csv("../../map/zip/basic/places.csv").then(function(data) { // Promise structure, new to D3 v5.
+
+      var margin = { top: 50, right: 50, bottom: 50, left: 50 }
+      var h = 500 - margin.top - margin.bottom
+      var w = 900 - margin.left - margin.right
+      var padding = 40;
+
+      var xLabel = "Percentage of surrounding homes with Income Under 25K"
+      var yLabel = "Tickets Earned"
+      var formatX = d3.format(".0%");
+      var formatY = d3.format(''); // d3.format('.02%');
+
+      data.forEach(function(d) {
+      // Change strings to numbers
+        //d[0] = +d.HouseMedianIncome; // x axis
+        //d[1] = +d.tickets; // y axis
+
+        //d.x = +d.HouseMedianIncome; // x axis
+        d.x = +d.IncomeUnder25K/100;
+        d.y = +d.sum_of_tickets_earned; // y axis
+        console.log(d.y)
+      });
+
+
+      //scale function
+      var xScale = d3.scaleLinear()
+        //.domain(["Alabama","Alaska","Arizona","Arkansas","California"])
+        .domain([0, d3.max(data, function(d) { return d.x; })])
+        //.range([padding, w-padding * 2]);
+        .range([padding, w - padding * 2]);
+        
+      var yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, function(d) { 
+          console.log('max y:' + d.y);
+          return d.y; 
+          })])
+        //.range([padding, w-padding * 2]);
+        .range([h - padding, padding]);
+      
+      var xAxis = d3.axisBottom().scale(xScale).tickFormat(formatX).ticks(5);
+      
+      var yAxis = d3.axisLeft().scale(yScale).tickFormat(formatY).ticks(5);
+      
+      //create svg element
+      var svg = d3.select("body")
+        .append("svg")
+        .attr('width',w + margin.left + margin.right)
+        .attr('height',h + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform','translate(' + margin.left + ',' + margin.top + ')');
+            
+      svg.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) {
+          return xScale(d.x);
+        })
+        .attr("cy", function(d) {
+          return yScale(d.y);
+        })
+        .attr("r", 3)
+        .attr("fill", "green");
+        
+        
+      //x axis
+      svg.append("g")
+        .attr("class", "axis")  
+        .attr("transform", "translate(0," + (h - padding) + ")")
+        .call(xAxis);
+      
+      //y axis
+      svg.append("g")
+        .attr("class", "axis")  
+        .attr("transform", "translate(" + padding + ", 0)")
+        .call(yAxis);
+        
+      svg.append('text') // X-axis Label
+        .attr('class','label')
+        .attr('y',h-13)
+        .attr('x',w)
+        .attr('dy','.71em')
+        .style('text-anchor','end')
+        .text(xLabel);
+
+      svg.append('text') // Y-axis Label
+        .attr('class','label')
+        .attr('transform','rotate(-90)')
+        .attr('x',0)
+        .attr('y',5)
+        .attr('dy','.71em')
+        .style('text-anchor','end')
+        .text(yLabel);
+
+
+    });
+
+
+    /*
+    data = [{max: 46, min: 32},
+          {max: 47, min: 31},
+          {max: 51, min: 41},
+          {max: 52, min: 38},
+          {max: 38, min: 29}];
+          */
+    
+      
+    
+    </script>
+  </body>
+</html>

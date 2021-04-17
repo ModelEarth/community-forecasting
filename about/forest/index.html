@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+<meta name="robots" content="noindex, nofollow">
+<title>Community Forecasting</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+	body {
+		padding: 50px;
+	}
+</style>
+
+<!--
+<script type="text/javascript" src="//d3js.org/d3.v5.min.js"></script>
+-->
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="../../js/zepto/zepto.min.js"></script>
+<script type="text/javascript" src="../../js/common.js"></script>
+<script type="text/javascript" src="../../js/showdown.min.js"></script>
+
+<link rel="stylesheet" href="../../css/community.css" />
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+	var year = param["year"] || "2016";
+	$('.yeartext').text(year);
+});
+//loadMarkupPage("../forecast/results.md", "resultsDiv", "mainframe");
+
+</script>
+
+</head>
+<body>
+
+
+<div class="sectionPadding" style="padding-top:0px; padding-bottom:0px">
+  <h1>Predictors of Increased Poverty</h1>
+</div>
+
+<div style="font-size:14pt; padding-bottom:30px">
+    Based on your areas of focus, the model sets default weights based on Random Forest Classifier
+    importance based on an increase of 2% or more for the selected indicator.
+</div>
+
+<!-- For D3 Embedded CSV Sheet -->
+<div style="margin-left:0px;margin-right:50px; float:left">
+
+
+    <b style='font-size:19px'>Random Forest Classifier</b><br><br>
+    <!-- Training Accuracy before tuning: 97%  -->  
+
+      <div style="overflow:scroll; max-width:100%;">
+          <div class="eTable" id="d3div"></div>
+      </div>
+
+
+      <div style="font-size: 10px; margin-top:4px; display:none">
+          Values are per 1,000 individuals.
+          Disclaimer: Data is based on projections which is prone to error.
+      </div>
+      
+  </div>
+  <style>
+      table {
+          border-collapse: collapse;
+          border: 2px black solid;
+          font: 12px sans-serif;
+          min-height: 10px;
+      }
+
+      td {
+          border: 1px black solid;
+          padding: 5px;
+      }
+  </style>
+  <script type="text/javascript" charset="utf-8">
+      d3.text("../../data/2016/2016_random_forest_poverty.csv", function (data) {
+          var parsedCSV = d3.csv.parseRows(data);
+
+          var container = d3.select("#d3div")
+              .append("table")
+
+              .selectAll("tr")
+              .data(parsedCSV).enter()
+              .append("tr")
+
+              .selectAll("td")
+              .data(function (d) {
+                  return d;
+              }).enter()
+              .append("td")
+              .text(function (d) {
+                  return d;
+              });
+      });
+  </script>
+  <!-- End D3 Embedded CSV Sheet -->
+
+
+<div style="overflow:auto; margin-top:0px">
+
+  <div style='font-size:16px'>
+  <b><span class="yeartext"></span> predicting 2017</b><br>
+  For model training, a "y" column value of 1 indicated zip codes where poverty increased in 2017 after increasing or remaining steady from 2015.<br><br>
+
+  </div>
+
+
+  <img src="../img/random-forest.webp" style="width:100%"><br>
+
+  <div style='font-size:12pt;line-height:16pt;padding-top:20px'>
+    Best Params: 
+    max depth: 8; <!-- max number of levels in each decision tree -->
+    n-estimators: 100 <!-- number of trees in the foreset --><br>
+
+    Accuracy before tuning: 69%.&nbsp;
+    Accuracy after tuning: 71%.
+  </div>
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vega-Lite - Scatterplot Temperature</title>
+  <meta charset="utf-8">
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.3.2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@4.0.0-rc1"></script>
+
+  <style media="screen">
+    /* Add space between Vega-Embed links  */
+    .vega-actions a {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vega-Lite Box Plot</h1>
+ 
+  <!-- Container for the visualization -->
+  <div id="vis"></div>
+
+  <script>
+  // Assign the specification to a local variable vlSpec.
+  var vlSpec = {
+    "data": {"url": "data/cars.json"},
+    "mark": "point",
+    "encoding": {
+      "x": {"field": "Horsepower","type": "quantitative"},
+      "y": {"field": "Miles_per_Gallon","type": "quantitative"}
+    }
+  };
+
+  // optional argument passed to Vega-Embed to specify Vega-Lite spec. More info at https://github.com/vega/vega-embed
+  var opt = {
+    "mode": "vega-lite"
+  };
+
+  // Embed the visualization in the container with id `vis`
+  vegaEmbed("#vis", vlSpec, opt).then(function(result) {
+    // Callback receiving the View instance and parsed Vega spec
+    // result.view is the View, which resides under the '#vis' element
+  }).catch(console.warn);
+  </script>
+</body>
+</html>

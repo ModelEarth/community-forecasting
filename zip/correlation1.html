@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Community Forecasting by Zipcode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script type="text/javascript" src="../js/d3/d3.v3.js"></script>
+
+    <!--
+        svg:not(:root), 
+        symbol, image, marker, pattern, 
+
+        , symbol, image, marker, pattern, foreignObject
+    -->
+    <style>
+        body {
+            padding: 50px;
+        }
+
+        #heatmap, .highcharts-container, svg:not(:root) {
+            overflow: visible !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+        }
+
+    </style>
+
+    <!--
+    <script type="text/javascript" src="//d3js.org/d3.v5.min.js"></script>
+    -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="../js/zepto/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    <link rel="stylesheet" href="../css/community.css"/>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var zip = param["zip"] || "30318";
+            $('.ziptext').text(zip);
+        });
+    </script>
+
+</head>
+<body>
+
+<h1>Zip Code <span class="ziptext"></span><br>
+2012-2016 projected to 2021</h1>
+
+
+<div id="heatmap" style="height: 650px; width: 90vw;"></div>
+<br>
+
+
+<script>
+    d3.csv('30318_projected_correlation.csv', function (data) {
+        const categories = [];
+        for (key in data[0]) {
+            categories.push(key);
+        }
+        const series_data = [];
+        for (let i = 0; i < categories.length; i++) {
+            for (let j = 0; j < data.length; j++) {
+                const field = categories[i];
+                series_data.push(
+                    [i, j, parseFloat(data[j][field]).toFixed(2)]
+                )
+            }
+        }
+
+        Highcharts.chart('heatmap', {
+
+            chart: {
+                type: 'heatmap',
+                marginTop: 40,
+                marginBottom: 80,
+                plotBorderWidth: 1
+            },
+
+
+            title: {
+                text: 'Indicators Correlation'
+            },
+
+            xAxis: {
+                categories: categories
+            },
+
+            yAxis: {
+                categories: categories,
+                title: null
+            },
+
+            colorAxis: {
+                min: -1,
+                max: 1,
+                minColor: '#ff0040',
+                maxColor: '#007bff'
+            },
+            credits: false,
+
+            legend: {
+                align: 'right',
+                layout: 'vertical',
+                margin: 0,
+                verticalAlign: 'top',
+                y: 25,
+                symbolHeight: 280
+            },
+
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.yAxis.categories[this.point.y] + ' vs ' +
+                        this.series.xAxis.categories[this.point.x] + '</b> : ' + this.point.value;
+                }
+            },
+
+            series: [{
+                name: 'Correlation',
+                borderWidth: 1,
+                data: series_data,
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000'
+                }
+            }]
+
+        });
+    });
+    fileName = '30318_projected.csv';
+    d3.csv(fileName, function (data) {
+        console.log(data);
+        years = [];
+        chartName = '';
+        mapData = {};
+        population = [];
+        for (let i = 0; i < data.length; i++) {
+            for (key in data[i]) {
+                if (key === 'Year') {
+                    years.push(data[i][key]);
+                } else if (key === ' Population') {
+                    population.push(
+                        parseInt(data[i][key])
+                    );
+                } else {
+                    if (!(key in mapData)) {
+                        mapData[key] = []
+                    }
+                    mapData[key].push(
+                        [
+                            data[i]['Year'],
+                            parseInt(data[i][key])
+                        ]
+                    );
+                }
+            }
+        }
+        console.log(years);
+        series = []
+        pop_series = [{
+            name: 'Population',
+            data: population
+        }];
+
+        for (key in mapData) {
+            series.push({
+                name: key,
+                data: mapData[key]
+            })
+        }
+        console.log(series);
+        console.log(pop_series);
+
+        Highcharts.chart('population', {
+            chart: {
+                zoomType: 'xy'
+            },
+
+            title: {
+                text: 'Population Growth'
+            },
+
+            xAxis: {
+                type: "category",
+                categories: years
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Population'
+                },
+                min: 0
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            plotOptions: {
+                series: {
+                    label: {
+                        connectorAllowed: false
+                    },
+                    pointStart: 2010
+                }
+            },
+            credits: false,
+
+            series: pop_series,
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+
+        });
+
+        Highcharts.chart('prediction', {
+            chart: {
+                zoomType: 'xy'
+            },
+
+            title: {
+                text: 'Jobs Growth'
+            },
+
+            xAxis: {
+                type: "category",
+                categories: years
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Jobs'
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            plotOptions: {
+                series: {
+                    label: {
+                        connectorAllowed: false
+                    },
+                    pointStart: 2010
+                }
+            },
+            credits: false,
+
+            series: series,
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

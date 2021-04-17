@@ -1,0 +1,125 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>DataScape: About Community</title>
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script type="text/javascript" src="../js/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../js/common.js"></script>
+  <script type="text/javascript" src="../js/showdown.min.js"></script>
+  <script type="text/javascript" src="../js/d3/d3.v3.js"></script>
+
+  <link rel="stylesheet" href="../css/community.css" />
+  <style>
+    body {
+      margin:0px;
+      background: #eee;
+    }
+  </style>
+  <script>
+    loadMarkupPage("results.md", "resultsDiv", "mainframe");
+  </script>
+</head>
+
+
+<body>
+  <div style="position:relative; width:100%; height:100%;">
+    <img src="forecast/poster/img/atlantaskyline.jpg" id="spanimg" />
+  </div>
+
+
+
+    <style>
+      #spanimg {
+        width:100%;
+        height:100%;
+        object-fit: cover;
+        overflow: hidden;
+      }
+      .txtbox {
+          position: relative;
+          overflow: hidden;
+          outline: none;
+          width: 100%;
+          max-width: 190px;
+          padding: 0 20px;
+          height: 48px;
+          line-height: 60px;
+          font-size: 24px;
+          color: #777;
+          border: solid 1px #b7b7b7;
+          border-radius: 5px;
+          margin-right: 7px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          float: left;
+      }
+      .gobutton {
+        margin: 0px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 18px;
+        padding: 14px 12px 15px 12px;
+        min-height: 38px;
+        color: #fff;
+        box-sizing: border-box;
+        background: #555;
+        height:48px;
+        text-decoration: none;
+      }
+      .gobutton:hover {
+        background: #aaa;
+        color: #fff;
+      }
+      #greatestNeedsHolder {
+        
+      }
+      .resultsHolder {
+        background: rgba(33,33,33,0.95);
+        color: #fff;
+        padding:10px 20px 10px 20px;
+        font-size: 18px;
+        border-radius: 5px;
+        margin-bottom: 8px;
+        line-height: 26px;
+      }
+    </style>
+
+    <div style="position:absolute; top:40px; left:40px">
+
+      <div id="greatestNeedsHolder" class='resultsHolder' style='margin-right:30px; '>
+        <div style="margin-bottom:10px;padding-top:0px">
+
+          <div style="margin-bottom:8px">View community forecasts...</div>
+
+          <input type="text" class="txtbox frst_location" id="zip" placeholder="Zip Code">
+          <div class="gobutton" style="float:left" onclick="goZip()">GO</div>
+          <div style="clear:both"></div>
+        </div>
+
+
+        <div id='resultsDiv' class='resultsHolder' style='display:none;max-width:500px; max-height: 500px; overflow: scroll;font-size:16pt'>
+        </div>
+
+      </div>
+
+
+  <script>
+    $('#zip').on("keypress", function(e) {
+      if (e.keyCode == 13) { // Enter hit
+        goZip();
+      }
+    });
+    function goZip() {
+      zip = $('#zip').val();
+      if (1==1 || zip.length == 5) {
+        window.location='../zip/#zip=' + zip;
+      } else {
+        alert('Please enter a 5 digit zip.');
+      }
+    }
+  </script>
+
+</body>
+</html>

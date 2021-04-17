@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <title>FactFinder - Annual Demographics and Poverty Data</title>
+  <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+
+</head>
+<body>
+
+<div class="spaceAtTop">
+</div>
+
+    <section class="main-content" style="margin-left:30px">
+      <!--
+      # fit a discrete power law to data using displ constructor
+      # m_pl = displ$new(moby)
+      # To infer model parameters, estimate the lower threshold
+      # est = estimate_xmin(m_pl)
+      # m_pl$setXmin(est)
+
+
+      Also (more verbose)
+      https://rdrr.io/cran/poweRlaw/src/inst/doc/b_powerlaw_examples.R
+      -->
+      <h2>Annual Demographics and Poverty Data</h2>
+
+
+    </section>
+
+
+      <!--
+      D3 - CSV to HTML table - Includes array to html and circle sample
+      http://bl.ocks.org/ndarville/7075823
+      http://christopheviau.com/d3_tutorial/
+      -->
+
+      <div style="margin-left:30px;margin-right:30px;">
+        <div class="eTable" id="d3div"></div>
+        <div style="font-size: 9px">
+        Download <a href="poverty_meta.csv">CSV File</a> | 
+        The csv file displayed above is embedded using a <a href="http://bl.ocks.org/ndarville/7075823">D3.js CSV to HTML table</a>
+        </div><br><br>
+
+        <br>
+
+      </div>
+
+      <!-- For D3 Embedded CSV Sheet -->
+      <style>
+          table {
+              border-collapse: collapse;
+              border: 2px black solid;
+              font: 12px sans-serif;
+              min-height: 10px;
+          }
+          td {
+              border: 1px black solid;
+              padding: 5px;
+          }
+      </style>
+      <script src="https://d3js.org/d3.v3.min.js"></script>
+      <script type="text/javascript" charset="utf-8">
+          d3.text("poverty_meta.csv", function(data) {
+              var parsedCSV = d3.csv.parseRows(data);
+
+              var container = d3.select("#d3div")
+                  .append("table")
+
+                  .selectAll("tr")
+                      .data(parsedCSV).enter()
+                      .append("tr")
+
+                  .selectAll("td")
+                      .data(function(d) { return d; }).enter()
+                      .append("td")
+                      .text(function(d) { return d; });
+            });
+        </script>
+        <br>
+
+  </body>
+</html>

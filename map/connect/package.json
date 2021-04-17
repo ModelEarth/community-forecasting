@@ -1,0 +1,9 @@
+{
+  "name": "network-connectivity-template",
+  "main": "network-connectivity-template.js",
+  "version": "185.0.0",
+  "author": {
+    "name": "Dan Wild",
+    "url": "https://observablehq.com/@danwild"
+  }
+}
