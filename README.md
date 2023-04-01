@@ -1,6 +1,6 @@
 # Community Forecasting
 
-[Visit our Community Forecasting Website](https://datascape.github.io/community-forecasting/)   
+[Visit our Community Forecasting Website](https://model.earth/community-forecasting/)   
 
 ## Data Science Resources
 
