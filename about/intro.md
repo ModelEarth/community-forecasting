@@ -12,9 +12,7 @@
 -->
 
 Based on your selected indicators and industries, 
-we'll form <b>DBSCAN</b> clusters of zip codes which you can apply   
-to find opportunities and generate mailing lists <!--within your local browser to filter results -->
-for program marketing campaigns. 
+we'll form <b>DBSCAN</b> clusters of zip codes to identify locations for community-focused campaigns.
 
 Our focus area filters are seeded with <b>Random Forest</b> importance indicators using job and income levels, employment levels across multiple industries, work experience, education level, crime stats, <span style="white-space:nowrap;">and poverty</span> levels for adults, children <span style="white-space:nowrap;">and seniors</span>.<br><br>
 
