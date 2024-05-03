@@ -60,8 +60,8 @@ https://docs.google.com/document/d/1VTDFXYbTVXjMVjPSunWvUb9T8djNMnqn_k3iSZyHYSI/
 <a href="about/levels">Addressing Persistent Poverty</a><br>--><br><br>
 
 <hr>
-<b>Disclaimer:</b> Predictions are prone to error. In using our site, you agree 
-not to rely on indicator projections as your sole source of information in making decisions. 
-<a href="about/info" target="mainframe">Full Disclaimer</a>
+Predictions are prone to error. In using our site, you agree 
+not to rely on indicator projections as your sole source of information in making decisions.<br><br> 
+<a href="about/info" target="mainframe">Disclaimer</a> | <a href="/community/zip/leaflet/">Upcoming&nbsp;Cluster&nbsp;Map</a>
 
 </div>
